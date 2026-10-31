@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAE Providencia - Iniciar Sesión</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0b1b36] min-h-screen flex items-center justify-center p-4">
+
+  <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 overflow-hidden border border-slate-200">
+    
+    <!-- Columna Izquierda: Identidad Institucional -->
+    <div class="bg-slate-50 p-8 flex flex-col items-center justify-center text-center border-r border-slate-200">
+      <img src="assets/logo.png" alt="Escudo CAE Providencia" class="w-48 h-48 object-contain mb-6 drop-shadow-md">
+      <h1 class="text-2xl font-bold text-slate-800 leading-tight">Centro de Apoyo<br>Escolar Providencia</h1>
+      <p class="text-xs text-slate-500 mt-2 font-medium">VIRGINIA TUIRAN</p>
+      <p class="text-sm text-slate-600 mt-4 leading-relaxed">
+        Plataforma web de seguimiento académico continuo, control de asistencia diaria, gestión de matrículas y facturación.
+      </p>
+    </div>
+
+    <!-- Columna Derecha: Formulario de Login -->
+    <div class="p-8 md:p-10 flex flex-col justify-center">
+      <h2 class="text-2xl font-bold text-slate-900 mb-1">Iniciar Sesión</h2>
+      <p class="text-xs text-slate-500 mb-6">Ingresa con las credenciales asignadas por la administración del centro.</p>
+
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Correo Electrónico</label>
+          <input type="email" id="email" required placeholder="Ejemplo@correo.com" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Contraseña</label>
+          <input type="password" id="password" required placeholder="............" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
+        </div>
+
+        <div id="loginError" class="text-xs text-red-600 font-medium hidden">
+          Credenciales no reconocidas. Usa admin@cae.com, profe@cae.com o acudiente@cae.com.
+        </div>
+
+        <button type="submit" class="w-full bg-[#0b1b36] hover:bg-blue-900 text-white font-bold py-2.5 rounded-lg text-sm uppercase tracking-wider transition-colors shadow">
+          INICIAR SESIÓN
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>
