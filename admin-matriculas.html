@@ -275,4 +275,452 @@
 
     <!-- Pestañas internas -->
     <div class="flex border-b border-slate-200 text-xs font-bold text-slate-600 bg-slate-100">
-      <button type="button" id="tabBtnCategorias" class="flex-1 py-3 border-b-2 border-blue-900 text-blue-900 bg
+      <button type="button" id="tabBtnCategorias" class="flex-1 py-3 border-b-2 border-blue-900 text-blue-900 bg-white">Categorías y Cupos</button>
+      <button type="button" id="tabBtnProfesores" class="flex-1 py-3 border-b-2 border-transparent hover:text-slate-900">Gestión de Profesores</button>
+    </div>
+
+    <!-- Contenido del Menú -->
+    <div class="p-5 overflow-y-auto flex-1 space-y-5">
+      
+      <!-- Pestaña 1: Editar Categorías -->
+      <section id="tabContentCategorias" class="space-y-4">
+        <div class="bg-amber-50 p-2.5 rounded-lg border border-amber-200 text-xs text-amber-800">
+          Seleccione una categoría para ajustar su tarifa, profesor, capacidad y materias.
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Categoría a Modificar</label>
+          <select id="adminCatSelector" class="w-full text-xs p-2.5 border border-slate-300 rounded bg-white">
+            <option value="cat1">1ra Categoría (Transición a 3º Primaria)</option>
+            <option value="cat2">2da Categoría (4º a 6º Grado)</option>
+            <option value="cat3">3ra Categoría (7º a 11º Bachillerato)</option>
+          </select>
+        </div>
+
+        <form id="formEditCategoria" class="space-y-3">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Capacidad Cupos</label>
+              <input type="number" id="editCapacidad" min="1" max="50" required class="w-full text-xs p-2 border border-slate-300 rounded">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Cupos Ocupados</label>
+              <input type="number" id="editOcupados" min="0" max="50" required class="w-full text-xs p-2 border border-slate-300 rounded">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Profesor Asignado</label>
+              <select id="editProfesor" class="w-full text-xs p-2 border border-slate-300 rounded bg-white">
+                <!-- Poblado dinámicamente -->
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Tarifa / Costo</label>
+              <input type="text" id="editTarifa" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="$120.000/mes">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Horario de Clases</label>
+            <input type="text" id="editHorario" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="Lun a Vie: 3:00 PM - 5:00 PM">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Materias (separadas por coma)</label>
+            <input type="text" id="editMaterias" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="Matemáticas, Inglés, Sociales">
+          </div>
+
+          <button type="submit" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded transition-colors shadow">
+            Guardar Cambios de Categoría
+          </button>
+        </form>
+      </section>
+
+      <!-- Pestaña 2: Profesores -->
+      <section id="tabContentProfesores" class="space-y-4 hidden">
+        <div class="bg-slate-50 p-3 rounded-lg border border-slate-300">
+          <h4 class="text-xs font-bold text-slate-900 uppercase mb-2">Registrar Nuevo Profesor</h4>
+          <form id="formNewProfesor" class="space-y-2.5">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 mb-0.5">Nombre Completo</label>
+              <input type="text" id="profNombre" required class="w-full text-xs p-1.5 border border-slate-300 rounded" placeholder="Ej. Roberto Gómez">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-700 mb-0.5">Teléfono</label>
+                <input type="tel" id="profTel" required class="w-full text-xs p-1.5 border border-slate-300 rounded" placeholder="3109876543">
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-700 mb-0.5">Correo (Login)</label>
+                <input type="email" id="profCorreo" required class="w-full text-xs p-1.5 border border-slate-300 rounded" placeholder="profe@cae.com">
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 mb-0.5">Áreas o Materias</label>
+              <input type="text" id="profEspecialidad" required class="w-full text-xs p-1.5 border border-slate-300 rounded" placeholder="Ciencias, Química">
+            </div>
+            <button type="submit" class="w-full py-1.5 bg-[#0b1b36] hover:bg-blue-900 text-white font-bold text-xs rounded shadow">
+              Registrar Profesor
+            </button>
+          </form>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-slate-800 mb-2">Docentes Activos</h4>
+          <div id="profesoresList" class="space-y-2">
+            <!-- Renderizado dinámico -->
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Backdrop para el Drawer -->
+  <div id="adminDrawerOverlay" class="fixed inset-0 bg-slate-900/50 hidden z-40"></div>
+
+  <!-- Lógica Integral -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Datos iniciales
+      const defaultProfesores = [
+        { id: "p1", nombre: "Profesor 1", tel: "3001234567", correo: "profe@cae.com", especialidad: "Primaria Integral" },
+        { id: "p2", nombre: "Profesor 2", tel: "3119876543", correo: "marta@cae.com", especialidad: "Matemáticas y Lenguaje" },
+        { id: "p3", nombre: "Profesor 3", tel: "3205554433", correo: "andres@cae.com", especialidad: "Bachillerato / Ciencias" }
+      ];
+
+      const defaultCategorias = {
+        cat1: {
+          titulo: "1ra Categoría (Transición a 3º Primaria)",
+          cuposOcupados: 8,
+          cuposTotal: 10,
+          profesorId: "p1",
+          horario: "Lun a Vie: 3:00 PM - 5:00 PM",
+          tarifa: "$120.000/mes",
+          materias: ["Matemáticas", "Sociales", "Castellano", "Inglés", "C. Naturales"]
+        },
+        cat2: {
+          titulo: "2da Categoría (4º a 6º Grado)",
+          cuposOcupados: 10,
+          cuposTotal: 10,
+          profesorId: "p2",
+          horario: "Lun a Vie: 3:00 PM - 6:00 PM",
+          tarifa: "$120.000/mes",
+          materias: ["Matemáticas", "Sociales", "Castellano", "Inglés", "C. Naturales"]
+        },
+        cat3: {
+          titulo: "3ra Categoría (7º a 11º Bachillerato)",
+          cuposOcupados: 0,
+          cuposTotal: 0,
+          esPorHoras: true,
+          profesorId: "p3",
+          horario: "Horario según asignación",
+          tarifa: "$30.000 / Hora",
+          materias: ["Matemáticas", "Inglés", "Ciencias Naturales"]
+        }
+      };
+
+      let profesores = JSON.parse(localStorage.getItem('cae_profesores')) || defaultProfesores;
+      let categorias = JSON.parse(localStorage.getItem('cae_categorias')) || defaultCategorias;
+
+      function saveState() {
+        localStorage.setItem('cae_profesores', JSON.stringify(profesores));
+        localStorage.setItem('cae_categorias', JSON.stringify(categorias));
+      }
+
+      function getProfesorName(id) {
+        const p = profesores.find(item => item.id === id);
+        return p ? p.nombre : "Sin asignar";
+      }
+
+      function updateCardsDisplay() {
+        Object.keys(categorias).forEach(key => {
+          const card = document.getElementById(`card-${key}`);
+          if (!card) return;
+          const cat = categorias[key];
+
+          const elTitulo = card.querySelector('.cat-titulo');
+          const elCupo = card.querySelector('.cat-cupo');
+          const elMeta = card.querySelector('.cat-meta');
+          const elTags = card.querySelector('.cat-tags');
+
+          if (elTitulo) elTitulo.textContent = cat.titulo;
+          if (elMeta) elMeta.textContent = `${getProfesorName(cat.profesorId)} • ${cat.horario} • ${cat.tarifa}`;
+
+          if (elCupo) {
+            if (cat.esPorHoras) {
+              elCupo.className = "text-xs bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded cat-cupo";
+              elCupo.textContent = "Por Horas";
+            } else if (cat.cuposOcupados >= cat.cuposTotal) {
+              elCupo.className = "text-xs bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded cat-cupo";
+              elCupo.textContent = `${cat.cuposOcupados}/${cat.cuposTotal} (CUPO LLENO)`;
+            } else {
+              elCupo.className = "text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded cat-cupo";
+              elCupo.textContent = `${cat.cuposOcupados}/${cat.cuposTotal} Cupos`;
+            }
+          }
+
+          if (elTags) {
+            elTags.innerHTML = cat.materias.map(m => `<span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">${m.trim()}</span>`).join('');
+          }
+        });
+      }
+
+      // Gestión de Profesores
+      function populateProfesorSelect() {
+        const select = document.getElementById('editProfesor');
+        select.innerHTML = '';
+        profesores.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.id;
+          opt.textContent = `${p.nombre} (${p.correo})`;
+          select.appendChild(opt);
+        });
+      }
+
+      function renderProfesoresList() {
+        const list = document.getElementById('profesoresList');
+        list.innerHTML = '';
+        profesores.forEach((prof, idx) => {
+          const item = document.createElement('div');
+          item.className = "p-2.5 bg-white border border-slate-200 rounded-lg flex items-center justify-between text-xs";
+          item.innerHTML = `
+            <div>
+              <div class="font-bold text-slate-900">${prof.nombre}</div>
+              <div class="text-[11px] text-slate-500">Tel: ${prof.tel} • ${prof.especialidad}</div>
+              <div class="text-[11px] text-blue-700 font-mono">${prof.correo}</div>
+            </div>
+            <button type="button" onclick="deleteProfesor(${idx})" class="text-rose-600 hover:text-rose-800 font-bold ml-2">Eliminar</button>
+          `;
+          list.appendChild(item);
+        });
+      }
+
+      window.deleteProfesor = function(index) {
+        if (profesores.length <= 1) {
+          alert('Debe existir al menos un profesor registrado.');
+          return;
+        }
+        const profId = profesores[index].id;
+        Object.keys(categorias).forEach(k => {
+          if (categorias[k].profesorId === profId) {
+            categorias[k].profesorId = profesores.find(p => p.id !== profId).id;
+          }
+        });
+        profesores.splice(index, 1);
+        saveState();
+        populateProfesorSelect();
+        renderProfesoresList();
+        updateCardsDisplay();
+      };
+
+      document.getElementById('formNewProfesor').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const nuevo = {
+          id: "p_" + Date.now(),
+          nombre: document.getElementById('profNombre').value.trim(),
+          tel: document.getElementById('profTel').value.trim(),
+          correo: document.getElementById('profCorreo').value.trim().toLowerCase(),
+          especialidad: document.getElementById('profEspecialidad').value.trim()
+        };
+        profesores.push(nuevo);
+        saveState();
+        populateProfesorSelect();
+        renderProfesoresList();
+        this.reset();
+        alert('Profesor registrado exitosamente.');
+      });
+
+      // Edición de Categorías
+      const catSelector = document.getElementById('adminCatSelector');
+      function loadCategoriaToForm(catKey) {
+        const c = categorias[catKey];
+        document.getElementById('editCapacidad').value = c.cuposTotal;
+        document.getElementById('editOcupados').value = c.cuposOcupados;
+        document.getElementById('editProfesor').value = c.profesorId;
+        document.getElementById('editTarifa').value = c.tarifa;
+        document.getElementById('editHorario').value = c.horario;
+        document.getElementById('editMaterias').value = c.materias.join(', ');
+      }
+
+      catSelector.addEventListener('change', (e) => loadCategoriaToForm(e.target.value));
+
+      document.getElementById('formEditCategoria').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const catKey = catSelector.value;
+        categorias[catKey].cuposTotal = parseInt(document.getElementById('editCapacidad').value) || 0;
+        categorias[catKey].cuposOcupados = parseInt(document.getElementById('editOcupados').value) || 0;
+        categorias[catKey].profesorId = document.getElementById('editProfesor').value;
+        categorias[catKey].tarifa = document.getElementById('editTarifa').value.trim();
+        categorias[catKey].horario = document.getElementById('editHorario').value.trim();
+        categorias[catKey].materias = document.getElementById('editMaterias').value.split(',').map(m => m.trim()).filter(Boolean);
+
+        saveState();
+        updateCardsDisplay();
+        alert('Categoría actualizada exitosamente.');
+      });
+
+      // Menú Drawer Lateral Izquierdo
+      const drawer = document.getElementById('adminDrawer');
+      const overlay = document.getElementById('adminDrawerOverlay');
+      const btnOpenDrawer = document.getElementById('btnToggleAdminDrawer');
+      const btnCloseDrawer = document.getElementById('btnCloseAdminDrawer');
+
+      function toggleDrawer(open) {
+        if (open) {
+          drawer.classList.remove('-translate-x-full');
+          overlay.classList.remove('hidden');
+          populateProfesorSelect();
+          loadCategoriaToForm(catSelector.value);
+          renderProfesoresList();
+        } else {
+          drawer.classList.add('-translate-x-full');
+          overlay.classList.add('hidden');
+        }
+      }
+
+      btnOpenDrawer.addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleDrawer(true);
+      });
+      btnCloseDrawer.addEventListener('click', () => toggleDrawer(false));
+      overlay.addEventListener('click', () => toggleDrawer(false));
+
+      // Tabs del Drawer
+      const tabBtnCat = document.getElementById('tabBtnCategorias');
+      const tabBtnProf = document.getElementById('tabBtnProfesores');
+      const tabContCat = document.getElementById('tabContentCategorias');
+      const tabContProf = document.getElementById('tabContentProfesores');
+
+      tabBtnCat.addEventListener('click', () => {
+        tabBtnCat.className = "flex-1 py-3 border-b-2 border-blue-900 text-blue-900 bg-white";
+        tabBtnProf.className = "flex-1 py-3 border-b-2 border-transparent hover:text-slate-900";
+        tabContCat.classList.remove('hidden');
+        tabContProf.classList.add('hidden');
+      });
+
+      tabBtnProf.addEventListener('click', () => {
+        tabBtnProf.className = "flex-1 py-3 border-b-2 border-blue-900 text-blue-900 bg-white";
+        tabBtnCat.className = "flex-1 py-3 border-b-2 border-transparent hover:text-slate-900";
+        tabContProf.classList.remove('hidden');
+        tabContCat.classList.add('hidden');
+      });
+
+      // Requisitos Obligatorios
+      const chkEntrevista = document.getElementById('chkEntrevista');
+      const chkExamen = document.getElementById('chkExamen');
+      const btnSubmit = document.getElementById('btnSubmitMatricula');
+      const badge = document.getElementById('requisitosBadge');
+
+      function checkRequisitos() {
+        const listos = chkEntrevista.checked && chkExamen.checked;
+        if (listos) {
+          btnSubmit.disabled = false;
+          btnSubmit.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-pointer shadow transition-all";
+          btnSubmit.innerText = "Oficializar Matrícula";
+          badge.innerHTML = 'Requisitos Verificados: <span class="text-emerald-600 font-bold">Estado Activa</span>';
+        } else {
+          btnSubmit.disabled = true;
+          btnSubmit.className = "w-full bg-slate-300 text-slate-500 font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-not-allowed transition-all";
+          btnSubmit.innerText = "Oficializar Matrícula (Requisitos Incompletos)";
+          badge.innerHTML = '<span class="text-slate-500 font-semibold">Requisitos: Pendientes</span>';
+        }
+      }
+
+      chkEntrevista.addEventListener('change', checkRequisitos);
+      chkExamen.addEventListener('change', checkRequisitos);
+
+      // Modal Acudientes
+      let acudientes = [];
+      const modal = document.getElementById('modalAcudiente');
+      const btnOpenModal = document.getElementById('btnOpenModal');
+      const btnCloseModal = document.getElementById('btnCloseModal');
+      const btnCancelModal = document.getElementById('btnCancelModal');
+      const acudienteForm = document.getElementById('acudienteForm');
+      const tableBody = document.getElementById('acudientesTableBody');
+
+      btnOpenModal.addEventListener('click', () => {
+        if (acudientes.length >= 2) return alert('Máximo 2 acudientes permitidos.');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      });
+
+      function closeModal() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        acudienteForm.reset();
+      }
+
+      btnCloseModal.addEventListener('click', closeModal);
+      btnCancelModal.addEventListener('click', closeModal);
+
+      acudienteForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        acudientes.push({
+          relacion: document.getElementById('modalRelacion').value,
+          nombre: document.getElementById('modalNombre').value.trim(),
+          tel: document.getElementById('modalTel').value.trim(),
+          correo: document.getElementById('modalCorreo').value.trim(),
+          direccion: document.getElementById('modalDireccion').value.trim()
+        });
+        renderTable();
+        closeModal();
+      });
+
+      window.deleteAcudiente = function(i) {
+        acudientes.splice(i, 1);
+        renderTable();
+      };
+
+      function renderTable() {
+        tableBody.innerHTML = '';
+        if (acudientes.length === 0) {
+          tableBody.innerHTML = '<tr id="emptyRow"><td colspan="6" class="p-3 text-center text-slate-400 italic">No hay acudientes registrados (mínimo 1 requerido).</td></tr>';
+          btnOpenModal.disabled = false;
+          btnOpenModal.classList.remove('opacity-50', 'cursor-not-allowed');
+          return;
+        }
+
+        acudientes.forEach((item, index) => {
+          const tr = document.createElement('tr');
+          tr.className = "border-b border-slate-200";
+          tr.innerHTML = `
+            <td class="p-2 font-medium text-slate-700">${item.relacion}</td>
+            <td class="p-2 font-semibold text-slate-900">${item.nombre}</td>
+            <td class="p-2 text-slate-600">${item.tel}</td>
+            <td class="p-2 text-slate-600">${item.correo}</td>
+            <td class="p-2 text-slate-600">${item.direccion}</td>
+            <td class="p-2 text-center">
+              <button type="button" onclick="deleteAcudiente(${index})" class="text-rose-600 hover:text-rose-800 font-bold text-xs">Eliminar</button>
+            </td>
+          `;
+          tableBody.appendChild(tr);
+        });
+
+        btnOpenModal.disabled = acudientes.length >= 2;
+        btnOpenModal.classList.toggle('opacity-50', acudientes.length >= 2);
+        btnOpenModal.classList.toggle('cursor-not-allowed', acudientes.length >= 2);
+      }
+
+      // Envío de Matrícula
+      document.getElementById('matriculaForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (acudientes.length === 0) {
+          alert('Debe registrar al menos un acudiente para formalizar la matrícula.');
+          return;
+        }
+        alert(`¡Matrícula formalizada exitosamente para ${document.getElementById('nombres').value}!`);
+        this.reset();
+        acudientes = [];
+        renderTable();
+        checkRequisitos();
+      });
+
+      // Inicializar visualización
+      updateCardsDisplay();
+    });
+  </script>
+</body>
+</html>
