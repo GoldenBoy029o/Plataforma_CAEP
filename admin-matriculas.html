@@ -6,9 +6,9 @@
   <title>CAE - Matrículas y Diagnóstico</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-800">
+<body class="bg-slate-200 text-slate-800 min-h-screen">
 
-  <!-- Guardia de seguridad simple -->
+  <!-- Validación básica de sesión -->
   <script>
     const session = JSON.parse(localStorage.getItem('cae_session') || '{}');
     if (session.role !== 'admin') {
@@ -18,105 +18,138 @@
   </script>
 
   <!-- Barra de Notificaciones Superiores -->
-  <header class="bg-white border-b border-slate-200 px-6 py-4">
+  <header class="bg-white border-b border-slate-300 px-6 py-4 shadow-sm">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="bg-red-50 border-l-4 border-red-500 p-3 rounded text-xs text-red-800">
+      <div class="bg-red-50 border-l-4 border-red-500 p-3 rounded-r text-xs text-red-800 shadow-sm">
         <span class="font-bold block">Mora (> 5° día hábil)</span>
         2 estudiantes en estado En Mora. Reportes y nuevas horas bloqueadas.
       </div>
-      <div class="bg-amber-50 border-l-4 border-amber-500 p-3 rounded text-xs text-amber-800">
+      <div class="bg-amber-50 border-l-4 border-amber-500 p-3 rounded-r text-xs text-amber-800 shadow-sm">
         <span class="font-bold block">Alerta de Inasistencias</span>
         Juan S. Pérez acumula 3 inasistencias seguidas. Requiere Plan de Intervención.
       </div>
-      <div class="bg-blue-50 border-l-4 border-blue-500 p-3 rounded text-xs text-blue-800">
+      <div class="bg-blue-50 border-l-4 border-blue-500 p-3 rounded-r text-xs text-blue-800 shadow-sm">
         <span class="font-bold block">Informes de Cierre de Mes</span>
         1 profesor tiene informes marcados como "Pendiente de Cierre".
       </div>
     </div>
   </header>
 
-  <!-- Contenido Principal -->
+  <!-- Contenedor Principal -->
   <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
     
-    <!-- Columna Izquierda: Formulario de Admisión -->
-    <section class="lg:col-span-7 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-      <h2 class="text-lg font-bold text-slate-900">Formalizar Matrícula y Examen Diagnóstico</h2>
-      <p class="text-xs text-amber-700 font-semibold bg-amber-50 border border-amber-200 rounded p-2 mt-2 mb-4">
-        Regla de Negocio: Es obligatorio registrar la entrevista y aprobar el examen diagnóstico.
-      </p>
-
-      <form id="matriculaForm" class="space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Columna Izquierda: Formulario de Matrícula -->
+    <section class="lg:col-span-7 bg-white p-6 rounded-xl shadow-md border border-slate-300 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Nombres del Estudiante</label>
-            <input type="text" id="nombres" required class="w-full text-xs p-2.5 border rounded-lg focus:ring-1 focus:ring-blue-500">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Apellidos del Estudiante</label>
-            <input type="text" id="apellidos" required class="w-full text-xs p-2.5 border rounded-lg focus:ring-1 focus:ring-blue-500">
+            <h2 class="text-xl font-bold text-slate-900">Formalizar Matrícula y Examen Diagnóstico</h2>
+            <p class="text-xs text-amber-700 font-semibold bg-amber-50 border border-amber-200 rounded px-2.5 py-1 mt-2 inline-block">
+              Regla de Negocio: Es obligatorio registrar la entrevista y aprobar el examen diagnóstico.
+            </p>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Documento de Identidad</label>
-            <input type="text" id="docIdentidad" required class="w-full text-xs p-2.5 border rounded-lg focus:ring-1 focus:ring-blue-500">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Grado Escolar / Categoría</label>
-            <select id="categoria" required class="w-full text-xs p-2.5 border rounded-lg bg-white focus:ring-1 focus:ring-blue-500">
-              <option value="">Seleccione una categoría...</option>
-              <option value="cat1">1ra Categoría (Transición a 3º Primaria)</option>
-              <option value="cat2" disabled>2da Categoría (4º a 6º Grado) - Cupo Lleno</option>
-              <option value="cat3">3ra Categoría (7º a 11º Bachillerato)</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Acudiente Asociado</label>
-          <div class="flex gap-2">
-            <input type="text" placeholder="Datos del acudiente..." class="w-full text-xs p-2.5 border rounded-lg">
-            <button type="button" class="whitespace-nowrap px-3 py-2 bg-slate-200 hover:bg-slate-300 text-xs font-bold rounded-lg">+ Nuevo Acudiente</button>
-          </div>
-        </div>
-
-        <!-- Requisitos Obligatorios -->
-        <div class="border-t pt-4">
-          <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Requisitos Obligatorios de Admisión</h3>
-          
-          <div class="space-y-2">
-            <label class="flex items-center text-xs text-slate-700">
-              <input type="checkbox" id="chkEntrevista" class="mr-2 rounded text-blue-600">
-              1. ¿Asistió a entrevista? <span class="text-slate-400 ml-1">(Con presencia del acudiente)</span>
-            </label>
-            <label class="flex items-center text-xs text-slate-700">
-              <input type="checkbox" id="chkExamen" class="mr-2 rounded text-blue-600">
-              2. ¿Realizó el examen Diagnóstico? <span class="text-slate-400 ml-1">(Criterio mínimo admisión)</span>
-            </label>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+        <form id="matriculaForm" class="space-y-4 mt-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Puntaje / Resultado</label>
-              <input type="text" value="82/100 Nivel Básico Aceptable" class="w-full text-xs p-2 border rounded-lg bg-slate-50">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Nombres del Estudiante</label>
+              <input type="text" id="nombres" required class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-slate-50">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Indicadores Iniciales</label>
-              <input type="text" value="Reforzar división de 2 cifras y comprensión lectora" class="w-full text-xs p-2 border rounded-lg bg-slate-50">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Apellidos del Estudiante</label>
+              <input type="text" id="apellidos" required class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-slate-50">
             </div>
           </div>
-        </div>
 
-        <div class="p-3 bg-slate-50 rounded-lg flex items-center justify-between text-xs">
-          <span>Requisitos Verificados: <strong class="text-emerald-600 font-semibold">Estado Activa</strong></span>
-          <span class="font-bold text-slate-700">Tarifa asignada: $120.000 COP / Mensualidad fija</span>
-        </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Documento de Identidad</label>
+              <input type="text" id="docIdentidad" required class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-slate-50">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Grado Escolar / Categoría</label>
+              <select id="categoria" required class="w-full text-xs p-2.5 border border-slate-300 rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500">
+                <option value="">Seleccione una categoría...</option>
+                <option value="cat1">1ra Categoría (Transición a 3º Primaria)</option>
+                <option value="cat2" disabled>2da Categoría (4º a 6º Grado) - Cupo Lleno</option>
+                <option value="cat3">3ra Categoría (7º a 11º Bachillerato)</option>
+              </select>
+            </div>
+          </div>
 
-        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-xs uppercase tracking-wider transition-colors">
-          Oficializar Matrícula
-        </button>
-      </form>
+          <!-- Sección de Acudientes con Modal y Tabla -->
+          <div class="border border-slate-300 rounded-lg p-3 bg-slate-50">
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <label class="block text-xs font-bold text-slate-800">Acudientes Responsables</label>
+                <span class="text-[11px] text-slate-500">Máximo 2 acudientes por estudiante</span>
+              </div>
+              <button type="button" id="btnOpenModal" class="px-3 py-1.5 bg-[#0b1b36] hover:bg-blue-900 text-white text-xs font-bold rounded-md transition-colors shadow">
+                + Nuevo Acudiente
+              </button>
+            </div>
+
+            <!-- Tabla de Acudientes -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs bg-white rounded border border-slate-200">
+                <thead class="bg-slate-100 text-slate-600 border-b border-slate-200">
+                  <tr>
+                    <th class="p-2 font-semibold">Relación</th>
+                    <th class="p-2 font-semibold">Nombre</th>
+                    <th class="p-2 font-semibold">Teléfono</th>
+                    <th class="p-2 font-semibold">Correo</th>
+                    <th class="p-2 font-semibold">Dirección</th>
+                    <th class="p-2 text-center">Acción</th>
+                  </tr>
+                </thead>
+                <tbody id="acudientesTableBody">
+                  <tr id="emptyRow">
+                    <td colspan="6" class="p-3 text-center text-slate-400 italic">No hay acudientes registrados (mínimo 1 requerido).</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Requisitos Obligatorios de Admisión -->
+          <div class="border border-slate-300 rounded-lg p-3.5 bg-slate-50 space-y-3">
+            <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Requisitos Obligatorios de Admisión</h3>
+            
+            <div class="space-y-2">
+              <label class="flex items-center text-xs text-slate-800 font-medium cursor-pointer">
+                <input type="checkbox" id="chkEntrevista" class="mr-2.5 h-4 w-4 rounded text-blue-600 border-slate-300 focus:ring-blue-500">
+                1. ¿Asistió a entrevista? <span class="text-slate-500 ml-1 font-normal">(Con presencia del acudiente)</span>
+              </label>
+              <label class="flex items-center text-xs text-slate-800 font-medium cursor-pointer">
+                <input type="checkbox" id="chkExamen" class="mr-2.5 h-4 w-4 rounded text-blue-600 border-slate-300 focus:ring-blue-500">
+                2. ¿Realizó el examen Diagnóstico? <span class="text-slate-500 ml-1 font-normal">(Criterio mínimo de admisión)</span>
+              </label>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Puntaje / Resultado</label>
+                <input type="text" value="82/100 Nivel Básico Aceptable" class="w-full text-xs p-2 border border-slate-300 rounded bg-white text-slate-700">
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Indicadores Iniciales</label>
+                <input type="text" value="Reforzar división de 2 cifras y comprensión lectora" class="w-full text-xs p-2 border border-slate-300 rounded bg-white text-slate-700">
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3 bg-slate-100 rounded-lg border border-slate-300 flex items-center justify-between text-xs">
+            <span id="requisitosBadge" class="text-slate-500 font-semibold">Requisitos: Pendientes</span>
+            <span class="font-bold text-slate-700">Tarifa: $120.000 COP / Mensual fija</span>
+          </div>
+
+          <!-- Botón de Oficializar Matrícula -->
+          <button type="submit" id="btnSubmitMatricula" disabled class="w-full bg-slate-300 text-slate-500 font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-not-allowed transition-all">
+            Oficializar Matrícula (Requisitos Incompletos)
+          </button>
+        </form>
+      </div>
     </section>
 
     <!-- Columna Derecha: Estado de Cupos y Planes de Estudio -->
@@ -124,67 +157,232 @@
       <h2 class="text-base font-bold text-slate-900">Estado de Cupos y Planes de Estudio</h2>
 
       <!-- 1ra Categoría -->
-      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+      <div class="bg-white p-4 rounded-xl shadow-md border border-slate-300">
         <div class="flex justify-between items-center mb-1">
-          <span class="font-bold text-xs">1ra Categoría (Transición a 3º Primaria)</span>
+          <span class="font-bold text-xs text-slate-800">1ra Categoría (Transición a 3º Primaria)</span>
           <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">8/10 Cupos</span>
         </div>
         <p class="text-xs text-slate-500 mb-2">Profesor 1 • Lun a Vie: 3:00 PM - 5:00 PM • $120.000/mes</p>
         <div class="flex flex-wrap gap-1">
-          <span class="px-2 py-0.5 bg-slate-100 text-[10px] rounded text-slate-600">Matemáticas</span>
-          <span class="px-2 py-0.5 bg-slate-100 text-[10px] rounded text-slate-600">Sociales</span>
-          <span class="px-2 py-0.5 bg-slate-100 text-[10px] rounded text-slate-600">Castellano</span>
-          <span class="px-2 py-0.5 bg-slate-100 text-[10px] rounded text-slate-600">Inglés</span>
-          <span class="px-2 py-0.5 bg-slate-100 text-[10px] rounded text-slate-600">C. Naturales</span>
+          <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Matemáticas</span>
+          <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Sociales</span>
+          <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Castellano</span>
+          <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Inglés</span>
+          <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">C. Naturales</span>
         </div>
       </div>
 
       <!-- 2da Categoría -->
-      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 opacity-90">
+      <div class="bg-white p-4 rounded-xl shadow-md border border-slate-300">
         <div class="flex justify-between items-center mb-1">
-          <span class="font-bold text-xs">2da Categoría (4º a 6º Grado)</span>
+          <span class="font-bold text-xs text-slate-800">2da Categoría (4º a 6º Grado)</span>
           <span class="text-xs bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded">10/10 (CUPO LLENO)</span>
         </div>
         <p class="text-xs text-slate-500 mb-2">Profesor 2 • Lun a Vie: 3:00 PM - 6:00 PM • $120.000/mes</p>
         <div class="flex flex-wrap gap-1">
-          <span class="px-2 py-0.5 bg-slate-100 text-[10px] rounded text-slate-600">Matemáticas</span>
-          <span class="px-2 py-0.5 bg-slate-100 text-[10px] rounded text-slate-600">Sociales</span>
-          <span class="px-2 py-0.5 bg-slate-100 text-[10px] rounded text-slate-600">Castellano</span>
-          <span class="px-2 py-0.5 bg-slate-100 text-[10px] rounded text-slate-600">Inglés</span>
-          <span class="px-2 py-0.5 bg-slate-100 text-[10px] rounded text-slate-600">C. Naturales</span>
+          <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Matemáticas</span>
+          <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Sociales</span>
+          <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Castellano</span>
+          <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Inglés</span>
+          <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">C. Naturales</span>
         </div>
       </div>
 
       <!-- 3ra Categoría -->
-      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+      <div class="bg-white p-4 rounded-xl shadow-md border border-slate-300">
         <div class="flex justify-between items-center mb-1">
-          <span class="font-bold text-xs">3ra Categoría (7º a 11º Bachillerato)</span>
+          <span class="font-bold text-xs text-slate-800">3ra Categoría (7º a 11º Bachillerato)</span>
           <span class="text-xs bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded">Por Horas</span>
         </div>
         <p class="text-xs text-slate-500 mb-2">Profesor 3 • Horario según asignación • $30.000 / Hora</p>
         <div class="flex flex-wrap gap-1">
-          <span class="px-2 py-0.5 bg-slate-100 text-[10px] rounded text-slate-600">Matemáticas</span>
-          <span class="px-2 py-0.5 bg-slate-100 text-[10px] rounded text-slate-600">Inglés</span>
-          <span class="px-2 py-0.5 bg-slate-100 text-[10px] rounded text-slate-600">Ciencias Naturales</span>
+          <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Matemáticas</span>
+          <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Inglés</span>
+          <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Ciencias Naturales</span>
         </div>
       </div>
     </aside>
 
   </main>
 
-  <script>
-    document.getElementById('matriculaForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const entrevista = document.getElementById('chkEntrevista').checked;
-      const examen = document.getElementById('chkExamen').checked;
+  <!-- Modal Emergente: Registrar Acudiente -->
+  <div id="modalAcudiente" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl shadow-2xl border border-slate-300 max-w-md w-full p-6">
+      <div class="flex justify-between items-center border-b pb-3 mb-4">
+        <h3 class="font-bold text-slate-900 text-sm">Registrar Acudiente / Encargado</h3>
+        <button type="button" id="btnCloseModal" class="text-slate-400 hover:text-slate-700 text-lg font-bold">&times;</button>
+      </div>
 
-      if (!entrevista || !examen) {
-        alert('Regla de negocio: Debe marcar la entrevista realizada y el examen diagnóstico aprobado para continuar.');
+      <form id="acudienteForm" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Relación con el estudiante</label>
+          <select id="modalRelacion" required class="w-full text-xs p-2 border border-slate-300 rounded focus:ring-1 focus:ring-blue-500">
+            <option value="">Seleccione relación...</option>
+            <option value="Madre">Madre</option>
+            <option value="Padre">Padre</option>
+            <option value="Tutor Legal">Tutor Legal</option>
+            <option value="Abuelo/a">Abuelo/a</option>
+            <option value="Familiar">Familiar / Otro</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre Completo</label>
+          <input type="text" id="modalNombre" required class="w-full text-xs p-2 border border-slate-300 rounded focus:ring-1 focus:ring-blue-500" placeholder="Ej. Ana Pérez">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Teléfono</label>
+            <input type="tel" id="modalTel" required class="w-full text-xs p-2 border border-slate-300 rounded focus:ring-1 focus:ring-blue-500" placeholder="Ej. 3001234567">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Correo Electrónico</label>
+            <input type="email" id="modalCorreo" required class="w-full text-xs p-2 border border-slate-300 rounded focus:ring-1 focus:ring-blue-500" placeholder="correo@ejemplo.com">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Dirección de Residencia</label>
+          <input type="text" id="modalDireccion" required class="w-full text-xs p-2 border border-slate-300 rounded focus:ring-1 focus:ring-blue-500" placeholder="Ej. Calle 12 # 34-56">
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t mt-4">
+          <button type="button" id="btnCancelModal" class="px-3 py-1.5 border border-slate-300 text-slate-700 text-xs font-medium rounded hover:bg-slate-100">Cancelar</button>
+          <button type="submit" class="px-4 py-1.5 bg-[#0b1b36] hover:bg-blue-900 text-white text-xs font-bold rounded">Guardar Acudiente</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lógica de Funcionamiento -->
+  <script>
+    // 1. Manejo reactivo de Requisitos Obligatorios
+    const chkEntrevista = document.getElementById('chkEntrevista');
+    const chkExamen = document.getElementById('chkExamen');
+    const btnSubmit = document.getElementById('btnSubmitMatricula');
+    const badge = document.getElementById('requisitosBadge');
+
+    function checkRequisitos() {
+      const listos = chkEntrevista.checked && chkExamen.checked;
+      if (listos) {
+        btnSubmit.disabled = false;
+        btnSubmit.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-pointer shadow transition-all";
+        btnSubmit.innerText = "Oficializar Matrícula";
+        badge.innerHTML = 'Requisitos Verificados: <span class="text-emerald-600 font-bold">Estado Activa</span>';
+      } else {
+        btnSubmit.disabled = true;
+        btnSubmit.className = "w-full bg-slate-300 text-slate-500 font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-not-allowed transition-all";
+        btnSubmit.innerText = "Oficializar Matrícula (Requisitos Incompletos)";
+        badge.innerHTML = '<span class="text-slate-500 font-semibold">Requisitos: Pendientes</span>';
+      }
+    }
+
+    chkEntrevista.addEventListener('change', checkRequisitos);
+    chkExamen.addEventListener('change', checkRequisitos);
+
+    // 2. Manejo de Acudientes y Ventana Emergente (Modal)
+    let acudientes = [];
+    const modal = document.getElementById('modalAcudiente');
+    const btnOpenModal = document.getElementById('btnOpenModal');
+    const btnCloseModal = document.getElementById('btnCloseModal');
+    const btnCancelModal = document.getElementById('btnCancelModal');
+    const acudienteForm = document.getElementById('acudienteForm');
+    const tableBody = document.getElementById('acudientesTableBody');
+
+    function openModal() {
+      if (acudientes.length >= 2) {
+        alert('Solo se permite registrar un máximo de 2 acudientes.');
+        return;
+      }
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      acudienteForm.reset();
+    }
+
+    btnOpenModal.addEventListener('click', openModal);
+    btnCloseModal.addEventListener('click', closeModal);
+    btnCancelModal.addEventListener('click', closeModal);
+
+    acudienteForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const nuevoAcudiente = {
+        relacion: document.getElementById('modalRelacion').value,
+        nombre: document.getElementById('modalNombre').value.trim(),
+        tel: document.getElementById('modalTel').value.trim(),
+        correo: document.getElementById('modalCorreo').value.trim(),
+        direccion: document.getElementById('modalDireccion').value.trim()
+      };
+
+      acudientes.push(nuevoAcudiente);
+      renderTable();
+      closeModal();
+    });
+
+    function deleteAcudiente(index) {
+      acudientes.splice(index, 1);
+      renderTable();
+    }
+
+    function renderTable() {
+      tableBody.innerHTML = '';
+
+      if (acudientes.length === 0) {
+        tableBody.innerHTML = '<tr id="emptyRow"><td colspan="6" class="p-3 text-center text-slate-400 italic">No hay acudientes registrados (mínimo 1 requerido).</td></tr>';
+        btnOpenModal.disabled = false;
+        btnOpenModal.classList.remove('opacity-50', 'cursor-not-allowed');
         return;
       }
 
-      alert('¡Estudiante matriculado con éxito!');
+      acudientes.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        tr.className = "border-b border-slate-200";
+        tr.innerHTML = `
+          <td class="p-2 font-medium text-slate-700">${item.relacion}</td>
+          <td class="p-2 font-semibold text-slate-900">${item.nombre}</td>
+          <td class="p-2 text-slate-600">${item.tel}</td>
+          <td class="p-2 text-slate-600">${item.correo}</td>
+          <td class="p-2 text-slate-600">${item.direccion}</td>
+          <td class="p-2 text-center">
+            <button type="button" onclick="deleteAcudiente(${index})" class="text-rose-600 hover:text-rose-800 font-bold text-xs">Eliminar</button>
+          </td>
+        `;
+        tableBody.appendChild(tr);
+      });
+
+      // Control del límite de 2 acudientes
+      if (acudientes.length >= 2) {
+        btnOpenModal.disabled = true;
+        btnOpenModal.classList.add('opacity-50', 'cursor-not-allowed');
+      } else {
+        btnOpenModal.disabled = false;
+        btnOpenModal.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    // 3. Envío del Formulario Completo
+    document.getElementById('matriculaForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      if (acudientes.length === 0) {
+        alert('Debe registrar al menos un acudiente para formalizar la matrícula.');
+        return;
+      }
+
+      const nombres = document.getElementById('nombres').value;
+      const apellidos = document.getElementById('apellidos').value;
+
+      alert(`¡Matrícula formalizada exitosamente para ${nombres} ${apellidos}!`);
       this.reset();
+      acudientes = [];
+      renderTable();
+      checkRequisitos();
     });
   </script>
 </body>
