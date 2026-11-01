@@ -20,8 +20,6 @@
   <!-- Barra Superior con Botón Hamburguesa a la Izquierda -->
   <header class="bg-white border-b border-slate-300 px-6 py-3 shadow-sm sticky top-0 z-30">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
-      
-      <!-- Botón Menú Hamburguesa (3 líneas) Sutil a la Izquierda -->
       <button type="button" id="btnToggleAdminDrawer" title="Ajustes Administrativos" class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -43,7 +41,6 @@
           1 profesor con informes como "Pendiente de Cierre".
         </div>
       </div>
-
     </div>
   </header>
 
@@ -79,15 +76,12 @@
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1">Grado Escolar / Categoría</label>
             <select id="categoriaSelect" required class="w-full text-xs p-2.5 border border-slate-300 rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500">
-              <option value="">Seleccione una categoría...</option>
-              <option value="cat1">1ra Categoría (Transición a 3º Primaria)</option>
-              <option value="cat2" disabled>2da Categoría (4º a 6º Grado) - Cupo Lleno</option>
-              <option value="cat3">3ra Categoría (7º a 11º Bachillerato)</option>
+              <!-- Sincronizado dinámicamente -->
             </select>
           </div>
         </div>
 
-        <!-- Sección de Acudientes -->
+        <!-- Acudientes -->
         <div class="border border-slate-300 rounded-lg p-3 bg-slate-50">
           <div class="flex items-center justify-between mb-2">
             <div>
@@ -120,7 +114,7 @@
           </div>
         </div>
 
-        <!-- Requisitos Obligatorios de Admisión -->
+        <!-- Requisitos Obligatorios -->
         <div class="border border-slate-300 rounded-lg p-3.5 bg-slate-50 space-y-3">
           <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Requisitos Obligatorios de Admisión</h3>
           
@@ -149,7 +143,7 @@
 
         <div class="p-3 bg-slate-100 rounded-lg border border-slate-300 flex items-center justify-between text-xs">
           <span id="requisitosBadge" class="text-slate-500 font-semibold">Requisitos: Pendientes</span>
-          <span class="font-bold text-slate-700">Tarifa asignada: $120.000 COP / Mensual fija</span>
+          <span class="font-bold text-slate-700" id="tarifaPreview">Tarifa: Seleccione categoría</span>
         </div>
 
         <button type="submit" id="btnSubmitMatricula" disabled class="w-full bg-slate-300 text-slate-500 font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-not-allowed transition-all">
@@ -158,56 +152,11 @@
       </form>
     </section>
 
-    <!-- Columna Derecha: Estado de Cupos y Planes de Estudio -->
+    <!-- Columna Derecha: Tarjetas de Cupos Dinámicas -->
     <aside class="lg:col-span-5 space-y-4">
       <h2 class="text-base font-bold text-slate-900">Estado de Cupos y Planes de Estudio</h2>
-
       <div id="cardsCategoriasContainer" class="space-y-4">
-        <!-- Tarjeta 1 -->
-        <div id="card-cat1" class="bg-white p-4 rounded-xl shadow-md border border-slate-300">
-          <div class="flex justify-between items-center mb-1">
-            <span class="font-bold text-xs text-slate-800 cat-titulo">1ra Categoría (Transición a 3º Primaria)</span>
-            <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded cat-cupo">8/10 Cupos</span>
-          </div>
-          <p class="text-xs text-slate-500 mb-2 cat-meta">Profesor 1 • Lun a Vie: 3:00 PM - 5:00 PM • $120.000/mes</p>
-          <div class="flex flex-wrap gap-1 cat-tags">
-            <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Matemáticas</span>
-            <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Sociales</span>
-            <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Castellano</span>
-            <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Inglés</span>
-            <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">C. Naturales</span>
-          </div>
-        </div>
-
-        <!-- Tarjeta 2 -->
-        <div id="card-cat2" class="bg-white p-4 rounded-xl shadow-md border border-slate-300">
-          <div class="flex justify-between items-center mb-1">
-            <span class="font-bold text-xs text-slate-800 cat-titulo">2da Categoría (4º a 6º Grado)</span>
-            <span class="text-xs bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded cat-cupo">10/10 (CUPO LLENO)</span>
-          </div>
-          <p class="text-xs text-slate-500 mb-2 cat-meta">Profesor 2 • Lun a Vie: 3:00 PM - 6:00 PM • $120.000/mes</p>
-          <div class="flex flex-wrap gap-1 cat-tags">
-            <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Matemáticas</span>
-            <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Sociales</span>
-            <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Castellano</span>
-            <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Inglés</span>
-            <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">C. Naturales</span>
-          </div>
-        </div>
-
-        <!-- Tarjeta 3 -->
-        <div id="card-cat3" class="bg-white p-4 rounded-xl shadow-md border border-slate-300">
-          <div class="flex justify-between items-center mb-1">
-            <span class="font-bold text-xs text-slate-800 cat-titulo">3ra Categoría (7º a 11º Bachillerato)</span>
-            <span class="text-xs bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded cat-cupo">Por Horas</span>
-          </div>
-          <p class="text-xs text-slate-500 mb-2 cat-meta">Profesor 3 • Horario según asignación • $30.000 / Hora</p>
-          <div class="flex flex-wrap gap-1 cat-tags">
-            <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Matemáticas</span>
-            <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Inglés</span>
-            <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">Ciencias Naturales</span>
-          </div>
-        </div>
+        <!-- Renderizado dinámicamente -->
       </div>
     </aside>
 
@@ -264,11 +213,11 @@
   </div>
 
   <!-- Panel Lateral Izquierdo: Ajustes Administrativos -->
-  <div id="adminDrawer" class="fixed inset-y-0 left-0 w-full max-w-md bg-white shadow-2xl border-r border-slate-300 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+  <div id="adminDrawer" class="fixed inset-y-0 left-0 w-full max-w-lg bg-white shadow-2xl border-r border-slate-300 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
     <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
       <div>
         <h3 class="font-bold text-slate-900 text-base">Ajustes Administrativos</h3>
-        <p class="text-xs text-slate-500">Gestión de cupos y profesores</p>
+        <p class="text-xs text-slate-500">Gestión de cupos, materias y profesores</p>
       </div>
       <button type="button" id="btnCloseAdminDrawer" class="text-slate-400 hover:text-slate-700 text-2xl font-bold p-1">&times;</button>
     </div>
@@ -282,39 +231,28 @@
     <!-- Contenido del Menú -->
     <div class="p-5 overflow-y-auto flex-1 space-y-5">
       
-      <!-- Pestaña 1: Editar Categorías -->
+      <!-- Pestaña 1: Categorías -->
       <section id="tabContentCategorias" class="space-y-4">
-        <div class="bg-amber-50 p-2.5 rounded-lg border border-amber-200 text-xs text-amber-800">
-          Seleccione una categoría para ajustar su tarifa, profesor, capacidad y materias.
+        
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-700 uppercase">Configurar Categorías</span>
+          <button type="button" id="btnNuevaCategoriaModal" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded transition-colors shadow">
+            + Nueva Categoría
+          </button>
         </div>
 
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Categoría a Modificar</label>
-          <select id="adminCatSelector" class="w-full text-xs p-2.5 border border-slate-300 rounded bg-white">
-            <option value="cat1">1ra Categoría (Transición a 3º Primaria)</option>
-            <option value="cat2">2da Categoría (4º a 6º Grado)</option>
-            <option value="cat3">3ra Categoría (7º a 11º Bachillerato)</option>
+          <select id="adminCatSelector" class="w-full text-xs p-2.5 border border-slate-300 rounded bg-white font-medium">
+            <!-- Sincronizado por JS -->
           </select>
         </div>
 
-        <form id="formEditCategoria" class="space-y-3">
+        <form id="formEditCategoria" class="space-y-3.5">
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Capacidad Cupos</label>
-              <input type="number" id="editCapacidad" min="1" max="50" required class="w-full text-xs p-2 border border-slate-300 rounded">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Cupos Ocupados</label>
-              <input type="number" id="editOcupados" min="0" max="50" required class="w-full text-xs p-2 border border-slate-300 rounded">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Profesor Asignado</label>
-              <select id="editProfesor" class="w-full text-xs p-2 border border-slate-300 rounded bg-white">
-                <!-- Poblado dinámicamente -->
-              </select>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Capacidad Total de Cupos</label>
+              <input type="number" id="editCapacidad" min="1" max="100" required class="w-full text-xs p-2 border border-slate-300 rounded bg-white">
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-700 mb-1">Tarifa / Costo</label>
@@ -323,13 +261,30 @@
           </div>
 
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Horario de Clases</label>
-            <input type="text" id="editHorario" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="Lun a Vie: 3:00 PM - 5:00 PM">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Profesor Asignado</label>
+            <select id="editProfesor" class="w-full text-xs p-2 border border-slate-300 rounded bg-white font-medium">
+              <!-- Sincronizado dinámicamente -->
+            </select>
           </div>
 
+          <!-- Horario de Clases Interactivo -->
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Materias (separadas por coma)</label>
-            <input type="text" id="editMaterias" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="Matemáticas, Inglés, Sociales">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Horario de Clases</label>
+            <div class="flex gap-2">
+              <input type="text" id="editHorario" readonly required class="w-full text-xs p-2 border border-slate-300 rounded bg-slate-50 text-slate-700 cursor-pointer" placeholder="Seleccione horario...">
+              <button type="button" id="btnAbrirPickerHorario" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-xs font-bold rounded">Definir</button>
+            </div>
+          </div>
+
+          <!-- Materias (Selector tipo Catálogo) -->
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label class="block text-xs font-semibold text-slate-700">Materias Asignadas</label>
+              <span class="text-[10px] text-slate-500 font-medium" id="countMateriasSeleccionadas">0 materias</span>
+            </div>
+            <div id="materiasChecklist" class="max-h-44 overflow-y-auto p-2.5 border border-slate-300 rounded-lg bg-slate-50 grid grid-cols-2 gap-1.5 text-xs">
+              <!-- Checkboxes generados dinámicamente -->
+            </div>
           </div>
 
           <button type="submit" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded transition-colors shadow">
@@ -378,13 +333,107 @@
     </div>
   </div>
 
+  <!-- Modal: Crear Nueva Categoría -->
+  <div id="modalNuevaCategoria" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl shadow-2xl border border-slate-300 max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-3 mb-4">
+        <h3 class="font-bold text-slate-900 text-sm">Crear Nueva Categoría</h3>
+        <button type="button" id="btnCloseNuevaCatModal" class="text-slate-400 hover:text-slate-700 text-lg font-bold">&times;</button>
+      </div>
+
+      <form id="formNuevaCategoria" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre / Título de la Categoría</label>
+          <input type="text" id="newCatTitulo" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="Ej. 4ta Categoría (Pre-Icfes)">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Capacidad de Cupos</label>
+            <input type="number" id="newCatCapacidad" min="1" max="100" value="10" required class="w-full text-xs p-2 border border-slate-300 rounded">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tarifa Mensual</label>
+            <input type="text" id="newCatTarifa" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="$130.000/mes">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Profesor Asignado</label>
+          <select id="newCatProfesor" class="w-full text-xs p-2 border border-slate-300 rounded bg-white">
+            <!-- Dinámico -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Horario Inicial</label>
+          <input type="text" id="newCatHorario" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="Lun a Vie: 2:00 PM - 4:00 PM">
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t mt-4">
+          <button type="button" id="btnCancelNuevaCatModal" class="px-3 py-1.5 border border-slate-300 text-slate-700 text-xs font-medium rounded hover:bg-slate-100">Cancelar</button>
+          <button type="submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded">Crear Categoría</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Mini Ventana: Selector de Horario (Días y Horas) -->
+  <div id="modalHorarioPicker" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl shadow-2xl border border-slate-300 max-w-sm w-full p-5 space-y-4">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h4 class="font-bold text-slate-900 text-xs uppercase">Configurar Días y Horas</h4>
+        <button type="button" id="btnCloseHorarioPicker" class="text-slate-400 hover:text-slate-700 text-lg font-bold">&times;</button>
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-700 mb-1.5">Días de la semana</label>
+        <div class="grid grid-cols-3 gap-1.5 text-xs">
+          <label class="flex items-center gap-1.5 p-1.5 bg-slate-50 border border-slate-200 rounded cursor-pointer"><input type="checkbox" name="diaSemana" value="Lun" checked> Lun</label>
+          <label class="flex items-center gap-1.5 p-1.5 bg-slate-50 border border-slate-200 rounded cursor-pointer"><input type="checkbox" name="diaSemana" value="Mar" checked> Mar</label>
+          <label class="flex items-center gap-1.5 p-1.5 bg-slate-50 border border-slate-200 rounded cursor-pointer"><input type="checkbox" name="diaSemana" value="Mié" checked> Mié</label>
+          <label class="flex items-center gap-1.5 p-1.5 bg-slate-50 border border-slate-200 rounded cursor-pointer"><input type="checkbox" name="diaSemana" value="Jue" checked> Jue</label>
+          <label class="flex items-center gap-1.5 p-1.5 bg-slate-50 border border-slate-200 rounded cursor-pointer"><input type="checkbox" name="diaSemana" value="Vie" checked> Vie</label>
+          <label class="flex items-center gap-1.5 p-1.5 bg-slate-50 border border-slate-200 rounded cursor-pointer"><input type="checkbox" name="diaSemana" value="Sáb"> Sáb</label>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-700 mb-1">Hora Inicio</label>
+          <input type="time" id="pickerHoraInicio" value="15:00" class="w-full text-xs p-2 border border-slate-300 rounded">
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-700 mb-1">Hora Fin</label>
+          <input type="time" id="pickerHoraFin" value="17:00" class="w-full text-xs p-2 border border-slate-300 rounded">
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t">
+        <button type="button" id="btnAceptarHorario" class="w-full py-2 bg-[#0b1b36] hover:bg-blue-900 text-white font-bold text-xs rounded transition-colors">
+          Aplicar Horario
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Backdrop para el Drawer -->
   <div id="adminDrawerOverlay" class="fixed inset-0 bg-slate-900/50 hidden z-40"></div>
 
   <!-- Lógica Integral -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. Datos iniciales
+      
+      // Catálogo de asignaturas oficiales de Primaria y Bachillerato
+      const catalogoMaterias = [
+        "Matemáticas", "Geometría", "Álgebra", "Estadística",
+        "Castellano / Lengua", "Comprensión Lectora", "Inglés",
+        "Ciencias Naturales", "Biología", "Química", "Física",
+        "Ciencias Sociales", "Historia", "Geografía", "Filosofía",
+        "Ética y Valores", "Informática"
+      ];
+
+      // Datos iniciales
       const defaultProfesores = [
         { id: "p1", nombre: "Profesor 1", tel: "3001234567", correo: "profe@cae.com", especialidad: "Primaria Integral" },
         { id: "p2", nombre: "Profesor 2", tel: "3119876543", correo: "marta@cae.com", especialidad: "Matemáticas y Lenguaje" },
@@ -399,7 +448,7 @@
           profesorId: "p1",
           horario: "Lun a Vie: 3:00 PM - 5:00 PM",
           tarifa: "$120.000/mes",
-          materias: ["Matemáticas", "Sociales", "Castellano", "Inglés", "C. Naturales"]
+          materias: ["Matemáticas", "Ciencias Sociales", "Castellano / Lengua", "Inglés", "Ciencias Naturales"]
         },
         cat2: {
           titulo: "2da Categoría (4º a 6º Grado)",
@@ -408,17 +457,17 @@
           profesorId: "p2",
           horario: "Lun a Vie: 3:00 PM - 6:00 PM",
           tarifa: "$120.000/mes",
-          materias: ["Matemáticas", "Sociales", "Castellano", "Inglés", "C. Naturales"]
+          materias: ["Matemáticas", "Geometría", "Ciencias Sociales", "Castellano / Lengua", "Inglés", "Ciencias Naturales"]
         },
         cat3: {
           titulo: "3ra Categoría (7º a 11º Bachillerato)",
           cuposOcupados: 0,
-          cuposTotal: 0,
+          cuposTotal: 20,
           esPorHoras: true,
           profesorId: "p3",
           horario: "Horario según asignación",
           tarifa: "$30.000 / Hora",
-          materias: ["Matemáticas", "Inglés", "Ciencias Naturales"]
+          materias: ["Matemáticas", "Álgebra", "Física", "Química", "Inglés", "Biología"]
         }
       };
 
@@ -435,40 +484,277 @@
         return p ? p.nombre : "Sin asignar";
       }
 
+      // Sincronizar tarjetas en pantalla principal
       function updateCardsDisplay() {
+        const container = document.getElementById('cardsCategoriasContainer');
+        container.innerHTML = '';
+
         Object.keys(categorias).forEach(key => {
-          const card = document.getElementById(`card-${key}`);
-          if (!card) return;
           const cat = categorias[key];
-
-          const elTitulo = card.querySelector('.cat-titulo');
-          const elCupo = card.querySelector('.cat-cupo');
-          const elMeta = card.querySelector('.cat-meta');
-          const elTags = card.querySelector('.cat-tags');
-
-          if (elTitulo) elTitulo.textContent = cat.titulo;
-          if (elMeta) elMeta.textContent = `${getProfesorName(cat.profesorId)} • ${cat.horario} • ${cat.tarifa}`;
-
-          if (elCupo) {
-            if (cat.esPorHoras) {
-              elCupo.className = "text-xs bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded cat-cupo";
-              elCupo.textContent = "Por Horas";
-            } else if (cat.cuposOcupados >= cat.cuposTotal) {
-              elCupo.className = "text-xs bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded cat-cupo";
-              elCupo.textContent = `${cat.cuposOcupados}/${cat.cuposTotal} (CUPO LLENO)`;
-            } else {
-              elCupo.className = "text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded cat-cupo";
-              elCupo.textContent = `${cat.cuposOcupados}/${cat.cuposTotal} Cupos`;
-            }
+          const isFull = !cat.esPorHoras && cat.cuposOcupados >= cat.cuposTotal;
+          
+          let cupoBadge = '';
+          if (cat.esPorHoras) {
+            cupoBadge = '<span class="text-xs bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded">Por Horas</span>';
+          } else if (isFull) {
+            cupoBadge = `<span class="text-xs bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded">${cat.cuposOcupados}/${cat.cuposTotal} (CUPO LLENO)</span>`;
+          } else {
+            cupoBadge = `<span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">${cat.cuposOcupados}/${cat.cuposTotal} Cupos</span>`;
           }
 
-          if (elTags) {
-            elTags.innerHTML = cat.materias.map(m => `<span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">${m.trim()}</span>`).join('');
-          }
+          const tags = cat.materias.map(m => `<span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">${m}</span>`).join('');
+
+          const card = document.createElement('div');
+          card.id = `card-${key}`;
+          card.className = "bg-white p-4 rounded-xl shadow-md border border-slate-300";
+          card.innerHTML = `
+            <div class="flex justify-between items-center mb-1">
+              <span class="font-bold text-xs text-slate-800">${cat.titulo}</span>
+              ${cupoBadge}
+            </div>
+            <p class="text-xs text-slate-500 mb-2">${getProfesorName(cat.profesorId)} • ${cat.horario} • ${cat.tarifa}</p>
+            <div class="flex flex-wrap gap-1">${tags}</div>
+          `;
+          container.appendChild(card);
+        });
+
+        syncCategoriasSelects();
+      }
+
+      // Sincronizar selectores desplegables de categorías
+      function syncCategoriasSelects() {
+        const selectMain = document.getElementById('categoriaSelect');
+        const selectAdmin = document.getElementById('adminCatSelector');
+        
+        const currentAdminVal = selectAdmin.value;
+        const currentMainVal = selectMain.value;
+
+        selectMain.innerHTML = '<option value="">Seleccione una categoría...</option>';
+        selectAdmin.innerHTML = '';
+
+        Object.keys(categorias).forEach(key => {
+          const cat = categorias[key];
+          const isFull = !cat.esPorHoras && cat.cuposOcupados >= cat.cuposTotal;
+
+          // Selector de matrícula
+          const optMain = document.createElement('option');
+          optMain.value = key;
+          optMain.textContent = `${cat.titulo} ${isFull ? '- (Cupo Lleno)' : ''}`;
+          if (isFull) optMain.disabled = true;
+          selectMain.appendChild(optMain);
+
+          // Selector del panel admin
+          const optAdmin = document.createElement('option');
+          optAdmin.value = key;
+          optAdmin.textContent = cat.titulo;
+          selectAdmin.appendChild(optAdmin);
+        });
+
+        if (currentAdminVal && categorias[currentAdminVal]) {
+          selectAdmin.value = currentAdminVal;
+        }
+        if (currentMainVal && categorias[currentMainVal]) {
+          selectMain.value = currentMainVal;
+        }
+      }
+
+      // Actualizar vista previa de tarifa al cambiar categoría en matrícula
+      document.getElementById('categoriaSelect').addEventListener('change', function() {
+        const cat = categorias[this.value];
+        const preview = document.getElementById('tarifaPreview');
+        if (cat) {
+          preview.textContent = `Tarifa: ${cat.tarifa} fija`;
+        } else {
+          preview.textContent = 'Tarifa: Seleccione categoría';
+        }
+      });
+
+      // -----------------------------------------------------------------
+      // GESTIÓN DEL FORMULARIO DE EDICIÓN DE CATEGORÍAS
+      // -----------------------------------------------------------------
+      const catSelector = document.getElementById('adminCatSelector');
+      const checklistContainer = document.getElementById('materiasChecklist');
+
+      function renderMateriasChecklist(materiasSeleccionadas) {
+        checklistContainer.innerHTML = '';
+        catalogoMaterias.forEach(mat => {
+          const isChecked = materiasSeleccionadas.includes(mat);
+          const label = document.createElement('label');
+          label.className = "flex items-center gap-1.5 p-1 hover:bg-slate-200/60 rounded cursor-pointer text-slate-700";
+          label.innerHTML = `
+            <input type="checkbox" name="catMateriaCheck" value="${mat}" ${isChecked ? 'checked' : ''} class="rounded text-blue-600">
+            <span>${mat}</span>
+          `;
+          checklistContainer.appendChild(label);
+        });
+        updateMateriasCount();
+
+        checklistContainer.querySelectorAll('input[type="checkbox"]').forEach(chk => {
+          chk.addEventListener('change', updateMateriasCount);
         });
       }
 
-      // Gestión de Profesores
+      function updateMateriasCount() {
+        const selected = checklistContainer.querySelectorAll('input[type="checkbox"]:checked');
+        document.getElementById('countMateriasSeleccionadas').textContent = `${selected.length} materias`;
+      }
+
+      function getMateriasSeleccionadas() {
+        const selected = [];
+        checklistContainer.querySelectorAll('input[type="checkbox"]:checked').forEach(chk => {
+          selected.push(chk.value);
+        });
+        return selected;
+      }
+
+      function loadCategoriaToForm(catKey) {
+        const c = categorias[catKey];
+        if (!c) return;
+        document.getElementById('editCapacidad').value = c.cuposTotal;
+        document.getElementById('editProfesor').value = c.profesorId;
+        document.getElementById('editTarifa').value = c.tarifa;
+        document.getElementById('editHorario').value = c.horario;
+        renderMateriasChecklist(c.materias || []);
+      }
+
+      catSelector.addEventListener('change', (e) => loadCategoriaToForm(e.target.value));
+
+      document.getElementById('formEditCategoria').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const catKey = catSelector.value;
+        const materias = getMateriasSeleccionadas();
+
+        if (materias.length === 0) {
+          alert('Debe seleccionar al menos una materia para la categoría.');
+          return;
+        }
+
+        categorias[catKey].cuposTotal = parseInt(document.getElementById('editCapacidad').value) || 0;
+        categorias[catKey].profesorId = document.getElementById('editProfesor').value;
+        categorias[catKey].tarifa = document.getElementById('editTarifa').value.trim();
+        categorias[catKey].horario = document.getElementById('editHorario').value.trim();
+        categorias[catKey].materias = materias;
+
+        saveState();
+        updateCardsDisplay();
+        alert('Categoría actualizada exitosamente.');
+      });
+
+      // -----------------------------------------------------------------
+      // SELECTOR INTERACTIVO DE HORARIOS (DÍAS Y HORAS)
+      // -----------------------------------------------------------------
+      const modalHorario = document.getElementById('modalHorarioPicker');
+      const editHorarioInput = document.getElementById('editHorario');
+      const btnAbrirHorario = document.getElementById('btnAbrirPickerHorario');
+      const btnCerrarHorario = document.getElementById('btnCloseHorarioPicker');
+      const btnAceptarHorario = document.getElementById('btnAceptarHorario');
+
+      function openHorarioPicker() {
+        modalHorario.classList.remove('hidden');
+        modalHorario.classList.add('flex');
+      }
+
+      function closeHorarioPicker() {
+        modalHorario.classList.add('hidden');
+        modalHorario.classList.remove('flex');
+      }
+
+      btnAbrirHorario.addEventListener('click', openHorarioPicker);
+      editHorarioInput.addEventListener('click', openHorarioPicker);
+      btnCerrarHorario.addEventListener('click', closeHorarioPicker);
+
+      function formatTime12h(time24) {
+        if (!time24) return '';
+        let [hours, minutes] = time24.split(':').map(Number);
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+        return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+      }
+
+      btnAceptarHorario.addEventListener('click', () => {
+        const checks = Array.from(modalHorario.querySelectorAll('input[name="diaSemana"]:checked')).map(c => c.value);
+        if (checks.length === 0) {
+          alert('Seleccione al menos un día de clase.');
+          return;
+        }
+
+        let diasTexto = '';
+        if (checks.length === 5 && checks.join(',') === 'Lun,Mar,Mié,Jue,Vie') {
+          diasTexto = 'Lun a Vie';
+        } else if (checks.length === 6 && checks.join(',') === 'Lun,Mar,Mié,Jue,Vie,Sáb') {
+          diasTexto = 'Lun a Sáb';
+        } else {
+          diasTexto = checks.join(', ');
+        }
+
+        const hInicio = formatTime12h(document.getElementById('pickerHoraInicio').value);
+        const hFin = formatTime12h(document.getElementById('pickerHoraFin').value);
+
+        editHorarioInput.value = `${diasTexto}: ${hInicio} - ${hFin}`;
+        closeHorarioPicker();
+      });
+
+      // -----------------------------------------------------------------
+      // MODAL: CREAR NUEVA CATEGORÍA
+      // -----------------------------------------------------------------
+      const modalNuevaCat = document.getElementById('modalNuevaCategoria');
+      const btnOpenNuevaCat = document.getElementById('btnNuevaCategoriaModal');
+      const btnCloseNuevaCat = document.getElementById('btnCloseNuevaCatModal');
+      const btnCancelNuevaCat = document.getElementById('btnCancelNuevaCatModal');
+      const formNuevaCat = document.getElementById('formNuevaCategoria');
+
+      btnOpenNuevaCat.addEventListener('click', () => {
+        populateNewCatProfesorSelect();
+        modalNuevaCat.classList.remove('hidden');
+        modalNuevaCat.classList.add('flex');
+      });
+
+      function closeNuevaCatModal() {
+        modalNuevaCat.classList.add('hidden');
+        modalNuevaCat.classList.remove('flex');
+        formNuevaCat.reset();
+      }
+
+      btnCloseNuevaCat.addEventListener('click', closeNuevaCatModal);
+      btnCancelNuevaCat.addEventListener('click', closeNuevaCatModal);
+
+      function populateNewCatProfesorSelect() {
+        const select = document.getElementById('newCatProfesor');
+        select.innerHTML = '';
+        profesores.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.id;
+          opt.textContent = `${p.nombre} (${p.correo})`;
+          select.appendChild(opt);
+        });
+      }
+
+      formNuevaCat.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const newKey = "cat_" + Date.now();
+        const nuevaCat = {
+          titulo: document.getElementById('newCatTitulo').value.trim(),
+          cuposOcupados: 0,
+          cuposTotal: parseInt(document.getElementById('newCatCapacidad').value) || 10,
+          profesorId: document.getElementById('newCatProfesor').value,
+          horario: document.getElementById('newCatHorario').value.trim(),
+          tarifa: document.getElementById('newCatTarifa').value.trim(),
+          materias: ["Matemáticas", "Castellano / Lengua", "Inglés", "Ciencias Naturales"]
+        };
+
+        categorias[newKey] = nuevaCat;
+        saveState();
+        updateCardsDisplay();
+        syncCategoriasSelects();
+        catSelector.value = newKey;
+        loadCategoriaToForm(newKey);
+        closeNuevaCatModal();
+        alert(`¡Categoría "${nuevaCat.titulo}" creada exitosamente!`);
+      });
+
+      // -----------------------------------------------------------------
+      // GESTIÓN DE PROFESORES
+      // -----------------------------------------------------------------
       function populateProfesorSelect() {
         const select = document.getElementById('editProfesor');
         select.innerHTML = '';
@@ -533,36 +819,9 @@
         alert('Profesor registrado exitosamente.');
       });
 
-      // Edición de Categorías
-      const catSelector = document.getElementById('adminCatSelector');
-      function loadCategoriaToForm(catKey) {
-        const c = categorias[catKey];
-        document.getElementById('editCapacidad').value = c.cuposTotal;
-        document.getElementById('editOcupados').value = c.cuposOcupados;
-        document.getElementById('editProfesor').value = c.profesorId;
-        document.getElementById('editTarifa').value = c.tarifa;
-        document.getElementById('editHorario').value = c.horario;
-        document.getElementById('editMaterias').value = c.materias.join(', ');
-      }
-
-      catSelector.addEventListener('change', (e) => loadCategoriaToForm(e.target.value));
-
-      document.getElementById('formEditCategoria').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const catKey = catSelector.value;
-        categorias[catKey].cuposTotal = parseInt(document.getElementById('editCapacidad').value) || 0;
-        categorias[catKey].cuposOcupados = parseInt(document.getElementById('editOcupados').value) || 0;
-        categorias[catKey].profesorId = document.getElementById('editProfesor').value;
-        categorias[catKey].tarifa = document.getElementById('editTarifa').value.trim();
-        categorias[catKey].horario = document.getElementById('editHorario').value.trim();
-        categorias[catKey].materias = document.getElementById('editMaterias').value.split(',').map(m => m.trim()).filter(Boolean);
-
-        saveState();
-        updateCardsDisplay();
-        alert('Categoría actualizada exitosamente.');
-      });
-
-      // Menú Drawer Lateral Izquierdo
+      // -----------------------------------------------------------------
+      // MENÚ DRAWER LATERAL IZQUIERDO
+      // -----------------------------------------------------------------
       const drawer = document.getElementById('adminDrawer');
       const overlay = document.getElementById('adminDrawerOverlay');
       const btnOpenDrawer = document.getElementById('btnToggleAdminDrawer');
@@ -608,7 +867,9 @@
         tabContCat.classList.add('hidden');
       });
 
-      // Requisitos Obligatorios
+      // -----------------------------------------------------------------
+      // REQUISITOS OBLIGATORIOS Y ACUDIENTES
+      // -----------------------------------------------------------------
       const chkEntrevista = document.getElementById('chkEntrevista');
       const chkExamen = document.getElementById('chkExamen');
       const btnSubmit = document.getElementById('btnSubmitMatricula');
@@ -704,21 +965,50 @@
         btnOpenModal.classList.toggle('cursor-not-allowed', acudientes.length >= 2);
       }
 
-      // Envío de Matrícula
+      // -----------------------------------------------------------------
+      // REGISTRO DE MATRÍCULA Y AUMENTO AUTOMÁTICO DE CUPOS
+      // -----------------------------------------------------------------
       document.getElementById('matriculaForm').addEventListener('submit', function(e) {
         e.preventDefault();
+        
         if (acudientes.length === 0) {
           alert('Debe registrar al menos un acudiente para formalizar la matrícula.');
           return;
         }
-        alert(`¡Matrícula formalizada exitosamente para ${document.getElementById('nombres').value}!`);
+
+        const selectedCatKey = document.getElementById('categoriaSelect').value;
+        const cat = categorias[selectedCatKey];
+
+        if (!cat) {
+          alert('Seleccione una categoría válida.');
+          return;
+        }
+
+        if (!cat.esPorHoras && cat.cuposOcupados >= cat.cuposTotal) {
+          alert('No hay cupos disponibles en esta categoría.');
+          return;
+        }
+
+        // Aumento automático de cupo ocupado al matricular
+        if (!cat.esPorHoras) {
+          cat.cuposOcupados += 1;
+        }
+
+        saveState();
+        updateCardsDisplay();
+
+        const nombreEst = document.getElementById('nombres').value;
+        const apellidoEst = document.getElementById('apellidos').value;
+        alert(`¡Matrícula formalizada exitosamente para ${nombreEst} ${apellidoEst}! Se ha asignado y actualizado el cupo en ${cat.titulo}.`);
+
         this.reset();
         acudientes = [];
         renderTable();
         checkRequisitos();
+        document.getElementById('tarifaPreview').textContent = 'Tarifa: Seleccione categoría';
       });
 
-      // Inicializar visualización
+      // Inicialización al cargar
       updateCardsDisplay();
     });
   </script>
