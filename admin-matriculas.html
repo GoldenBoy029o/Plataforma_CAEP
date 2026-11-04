@@ -102,7 +102,7 @@
                   <th class="p-2 font-semibold">Teléfono</th>
                   <th class="p-2 font-semibold">Correo</th>
                   <th class="p-2 font-semibold">Dirección</th>
-                  
+                  <th class="p-2 text-center">Acción</th>
                 </tr>
               </thead>
               <tbody id="acudientesTableBody">
@@ -115,7 +115,7 @@
         </div>
 
         <!-- Requisitos Obligatorios -->
-        <div class="border border-slate-300 rounded-lg p-3.5 bg-slate-50 space-y-3">
+        <div id="requisitosBox" class="border border-slate-300 rounded-lg p-3.5 bg-slate-50 space-y-3 transition-opacity duration-300">
           <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Requisitos Obligatorios de Admisión</h3>
           
           <div class="space-y-2">
@@ -132,11 +132,11 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 mb-1">Puntaje / Resultado</label>
-              <input type="text" value="" class="w-full text-xs p-2 border border-slate-300 rounded bg-white text-slate-700">
+              <input type="text" id="puntajeInput" value="" class="w-full text-xs p-2 border border-slate-300 rounded bg-white text-slate-700">
             </div>
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 mb-1">Indicadores Iniciales</label>
-              <input type="text" value="" class="w-full text-xs p-2 border border-slate-300 rounded bg-white text-slate-700">
+              <input type="text" id="indicadoresInput" value="" class="w-full text-xs p-2 border border-slate-300 rounded bg-white text-slate-700">
             </div>
           </div>
         </div>
@@ -276,7 +276,7 @@
             </div>
           </div>
 
-          <!-- Materias (Selector tipo Catálogo) -->
+          <!-- Materias -->
           <div>
             <div class="flex justify-between items-center mb-1">
               <label class="block text-xs font-semibold text-slate-700">Materias Asignadas</label>
@@ -353,8 +353,8 @@
             <input type="number" id="newCatCapacidad" min="1" max="100" value="10" required class="w-full text-xs p-2 border border-slate-300 rounded">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Tarifa Mensual</label>
-            <input type="text" id="newCatTarifa" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="$130.000/mes">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tarifa Sugerida</label>
+            <input type="text" id="newCatTarifa" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="$130.000/mes o $30.000 / hora">
           </div>
         </div>
 
@@ -367,7 +367,10 @@
 
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Horario Inicial</label>
-          <input type="text" id="newCatHorario" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="Lun a Vie: 2:00 PM - 4:00 PM">
+          <div class="flex gap-2">
+            <input type="text" id="newCatHorario" readonly required class="w-full text-xs p-2 border border-slate-300 rounded bg-slate-50 text-slate-700 cursor-pointer" placeholder="Seleccione horario...">
+            <button type="button" id="btnAbrirPickerHorarioNew" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-xs font-bold rounded">Definir</button>
+          </div>
         </div>
 
         <div class="flex justify-end gap-2 pt-3 border-t mt-4">
@@ -379,7 +382,7 @@
   </div>
 
   <!-- Mini Ventana: Selector de Horario (Días y Horas) -->
-  <div id="modalHorarioPicker" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+  <div id="modalHorarioPicker" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-[60]">
     <div class="bg-white rounded-xl shadow-2xl border border-slate-300 max-w-sm w-full p-5 space-y-4">
       <div class="flex justify-between items-center border-b pb-2">
         <h4 class="font-bold text-slate-900 text-xs uppercase">Configurar Días y Horas</h4>
@@ -424,7 +427,6 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       
-      // Catálogo de asignaturas oficiales de Primaria y Bachillerato
       const catalogoMaterias = [
         "Matemáticas", "Geometría", "Álgebra", "Estadística",
         "Castellano / Lengua", "Comprensión Lectora", "Inglés",
@@ -433,7 +435,6 @@
         "Ética y Valores", "Informática"
       ];
 
-      // Datos iniciales
       const defaultProfesores = [
         { id: "p1", nombre: "Profesor 1", tel: "3001234567", correo: "profe@cae.com", especialidad: "Primaria Integral" },
         { id: "p2", nombre: "Profesor 2", tel: "3119876543", correo: "marta@cae.com", especialidad: "Matemáticas y Lenguaje" },
@@ -484,7 +485,24 @@
         return p ? p.nombre : "Sin asignar";
       }
 
-      // Sincronizar tarjetas en pantalla principal
+      // -----------------------------------------------------------------
+      // AUTOFORMATO DE MONEDA ($ / HORA O / MES)
+      // -----------------------------------------------------------------
+      function autoFormatTarifa(e) {
+        let input = e.target;
+        let rawVal = input.value.toLowerCase();
+        let numbers = rawVal.replace(/\D/g, ''); // Extrae sólo números
+        if (!numbers) return;
+        
+        let formatted = new Intl.NumberFormat('es-CO').format(parseInt(numbers, 10));
+        let suffix = rawVal.includes('hora') ? ' / Hora' : '/mes';
+        input.value = `$${formatted}${suffix}`;
+      }
+
+      document.getElementById('editTarifa').addEventListener('blur', autoFormatTarifa);
+      document.getElementById('newCatTarifa').addEventListener('blur', autoFormatTarifa);
+
+
       function updateCardsDisplay() {
         const container = document.getElementById('cardsCategoriasContainer');
         container.innerHTML = '';
@@ -494,7 +512,7 @@
           const isFull = !cat.esPorHoras && cat.cuposOcupados >= cat.cuposTotal;
           
           let cupoBadge = '';
-          if (cat.esPorHoras) {
+          if (cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora'))) {
             cupoBadge = '<span class="text-xs bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded">Por Horas</span>';
           } else if (isFull) {
             cupoBadge = `<span class="text-xs bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded">${cat.cuposOcupados}/${cat.cuposTotal} (CUPO LLENO)</span>`;
@@ -521,7 +539,6 @@
         syncCategoriasSelects();
       }
 
-      // Sincronizar selectores desplegables de categorías
       function syncCategoriasSelects() {
         const selectMain = document.getElementById('categoriaSelect');
         const selectAdmin = document.getElementById('adminCatSelector');
@@ -536,38 +553,95 @@
           const cat = categorias[key];
           const isFull = !cat.esPorHoras && cat.cuposOcupados >= cat.cuposTotal;
 
-          // Selector de matrícula
           const optMain = document.createElement('option');
           optMain.value = key;
           optMain.textContent = `${cat.titulo} ${isFull ? '- (Cupo Lleno)' : ''}`;
-          if (isFull) optMain.disabled = true;
+          if (isFull && !cat.esPorHoras && !(cat.tarifa && cat.tarifa.toLowerCase().includes('hora'))) {
+            optMain.disabled = true;
+          }
           selectMain.appendChild(optMain);
 
-          // Selector del panel admin
           const optAdmin = document.createElement('option');
           optAdmin.value = key;
           optAdmin.textContent = cat.titulo;
           selectAdmin.appendChild(optAdmin);
         });
 
-        if (currentAdminVal && categorias[currentAdminVal]) {
-          selectAdmin.value = currentAdminVal;
+        if (currentAdminVal && categorias[currentAdminVal]) { selectAdmin.value = currentAdminVal; }
+        if (currentMainVal && categorias[currentMainVal]) { selectMain.value = currentMainVal; }
+      }
+
+      // -----------------------------------------------------------------
+      // CONTROL DE REQUISITOS OBLIGATORIOS (DESHABILITAR SI ES CAT3 O POR HORA)
+      // -----------------------------------------------------------------
+      const chkEntrevista = document.getElementById('chkEntrevista');
+      const chkExamen = document.getElementById('chkExamen');
+      const puntajeInput = document.getElementById('puntajeInput');
+      const indicadoresInput = document.getElementById('indicadoresInput');
+      const btnSubmit = document.getElementById('btnSubmitMatricula');
+      const badge = document.getElementById('requisitosBadge');
+      const requisitosBox = document.getElementById('requisitosBox');
+
+      document.getElementById('categoriaSelect').addEventListener('change', function() {
+        const catKey = this.value;
+        const cat = categorias[catKey];
+        const preview = document.getElementById('tarifaPreview');
+
+        if (cat) {
+          preview.textContent = `Tarifa: ${cat.tarifa} fija`;
+          
+          // Verificar si es categoría 3 o cobro por horas (No requiere requisitos)
+          const esExento = catKey === 'cat3' || cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora'));
+          
+          if (esExento) {
+            requisitosBox.classList.add('opacity-50', 'pointer-events-none');
+            chkEntrevista.checked = false;
+            chkExamen.checked = false;
+            chkEntrevista.disabled = true;
+            chkExamen.disabled = true;
+            puntajeInput.value = '';
+            indicadoresInput.value = '';
+            puntajeInput.disabled = true;
+            indicadoresInput.disabled = true;
+          } else {
+            requisitosBox.classList.remove('opacity-50', 'pointer-events-none');
+            chkEntrevista.disabled = false;
+            chkExamen.disabled = false;
+            puntajeInput.disabled = false;
+            indicadoresInput.disabled = false;
+          }
+        } else {
+          preview.textContent = 'Tarifa: Seleccione categoría';
+          requisitosBox.classList.remove('opacity-50', 'pointer-events-none');
         }
-        if (currentMainVal && categorias[currentMainVal]) {
-          selectMain.value = currentMainVal;
+        checkRequisitos();
+      });
+
+      function checkRequisitos() {
+        const catKey = document.getElementById('categoriaSelect').value;
+        const cat = categorias[catKey];
+        const esExento = catKey === 'cat3' || (cat && (cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora'))));
+
+        // Si es exento, se consideran listos sin importar los checks
+        const listos = esExento || (chkEntrevista.checked && chkExamen.checked);
+        
+        if (listos && catKey) {
+          btnSubmit.disabled = false;
+          btnSubmit.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-pointer shadow transition-all";
+          btnSubmit.innerText = "Oficializar Matrícula";
+          badge.innerHTML = esExento 
+            ? 'Requisitos: <span class="text-blue-600 font-bold">No Aplican (Exento)</span>' 
+            : 'Requisitos Verificados: <span class="text-emerald-600 font-bold">Estado Activa</span>';
+        } else {
+          btnSubmit.disabled = true;
+          btnSubmit.className = "w-full bg-slate-300 text-slate-500 font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-not-allowed transition-all";
+          btnSubmit.innerText = "Oficializar Matrícula (Requisitos Incompletos)";
+          badge.innerHTML = '<span class="text-slate-500 font-semibold">Requisitos: Pendientes</span>';
         }
       }
 
-      // Actualizar vista previa de tarifa al cambiar categoría en matrícula
-      document.getElementById('categoriaSelect').addEventListener('change', function() {
-        const cat = categorias[this.value];
-        const preview = document.getElementById('tarifaPreview');
-        if (cat) {
-          preview.textContent = `Tarifa: ${cat.tarifa} fija`;
-        } else {
-          preview.textContent = 'Tarifa: Seleccione categoría';
-        }
-      });
+      chkEntrevista.addEventListener('change', checkRequisitos);
+      chkExamen.addEventListener('change', checkRequisitos);
 
       // -----------------------------------------------------------------
       // GESTIÓN DEL FORMULARIO DE EDICIÓN DE CATEGORÍAS
@@ -641,27 +715,30 @@
       });
 
       // -----------------------------------------------------------------
-      // SELECTOR INTERACTIVO DE HORARIOS (DÍAS Y HORAS)
+      // SELECTOR INTERACTIVO DE HORARIOS (DÍAS Y HORAS) COMPARTIDO
       // -----------------------------------------------------------------
       const modalHorario = document.getElementById('modalHorarioPicker');
-      const editHorarioInput = document.getElementById('editHorario');
-      const btnAbrirHorario = document.getElementById('btnAbrirPickerHorario');
-      const btnCerrarHorario = document.getElementById('btnCloseHorarioPicker');
-      const btnAceptarHorario = document.getElementById('btnAceptarHorario');
+      let targetHorarioInput = null;
 
-      function openHorarioPicker() {
+      function openHorarioPicker(e) {
+        if (e.currentTarget.id === 'btnAbrirPickerHorario' || e.currentTarget.id === 'editHorario') {
+          targetHorarioInput = document.getElementById('editHorario');
+        } else {
+          targetHorarioInput = document.getElementById('newCatHorario');
+        }
         modalHorario.classList.remove('hidden');
         modalHorario.classList.add('flex');
       }
 
-      function closeHorarioPicker() {
+      document.getElementById('btnAbrirPickerHorario').addEventListener('click', openHorarioPicker);
+      document.getElementById('editHorario').addEventListener('click', openHorarioPicker);
+      document.getElementById('btnAbrirPickerHorarioNew').addEventListener('click', openHorarioPicker);
+      document.getElementById('newCatHorario').addEventListener('click', openHorarioPicker);
+      
+      document.getElementById('btnCloseHorarioPicker').addEventListener('click', () => {
         modalHorario.classList.add('hidden');
         modalHorario.classList.remove('flex');
-      }
-
-      btnAbrirHorario.addEventListener('click', openHorarioPicker);
-      editHorarioInput.addEventListener('click', openHorarioPicker);
-      btnCerrarHorario.addEventListener('click', closeHorarioPicker);
+      });
 
       function formatTime12h(time24) {
         if (!time24) return '';
@@ -671,12 +748,9 @@
         return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
       }
 
-      btnAceptarHorario.addEventListener('click', () => {
+      document.getElementById('btnAceptarHorario').addEventListener('click', () => {
         const checks = Array.from(modalHorario.querySelectorAll('input[name="diaSemana"]:checked')).map(c => c.value);
-        if (checks.length === 0) {
-          alert('Seleccione al menos un día de clase.');
-          return;
-        }
+        if (checks.length === 0) return alert('Seleccione al menos un día de clase.');
 
         let diasTexto = '';
         if (checks.length === 5 && checks.join(',') === 'Lun,Mar,Mié,Jue,Vie') {
@@ -690,35 +764,18 @@
         const hInicio = formatTime12h(document.getElementById('pickerHoraInicio').value);
         const hFin = formatTime12h(document.getElementById('pickerHoraFin').value);
 
-        editHorarioInput.value = `${diasTexto}: ${hInicio} - ${hFin}`;
-        closeHorarioPicker();
+        if(targetHorarioInput) targetHorarioInput.value = `${diasTexto}: ${hInicio} - ${hFin}`;
+        
+        modalHorario.classList.add('hidden');
+        modalHorario.classList.remove('flex');
       });
 
       // -----------------------------------------------------------------
       // MODAL: CREAR NUEVA CATEGORÍA
       // -----------------------------------------------------------------
       const modalNuevaCat = document.getElementById('modalNuevaCategoria');
-      const btnOpenNuevaCat = document.getElementById('btnNuevaCategoriaModal');
-      const btnCloseNuevaCat = document.getElementById('btnCloseNuevaCatModal');
-      const btnCancelNuevaCat = document.getElementById('btnCancelNuevaCatModal');
-      const formNuevaCat = document.getElementById('formNuevaCategoria');
-
-      btnOpenNuevaCat.addEventListener('click', () => {
-        populateNewCatProfesorSelect();
-        modalNuevaCat.classList.remove('hidden');
-        modalNuevaCat.classList.add('flex');
-      });
-
-      function closeNuevaCatModal() {
-        modalNuevaCat.classList.add('hidden');
-        modalNuevaCat.classList.remove('flex');
-        formNuevaCat.reset();
-      }
-
-      btnCloseNuevaCat.addEventListener('click', closeNuevaCatModal);
-      btnCancelNuevaCat.addEventListener('click', closeNuevaCatModal);
-
-      function populateNewCatProfesorSelect() {
+      
+      document.getElementById('btnNuevaCategoriaModal').addEventListener('click', () => {
         const select = document.getElementById('newCatProfesor');
         select.innerHTML = '';
         profesores.forEach(p => {
@@ -727,9 +784,20 @@
           opt.textContent = `${p.nombre} (${p.correo})`;
           select.appendChild(opt);
         });
+        modalNuevaCat.classList.remove('hidden');
+        modalNuevaCat.classList.add('flex');
+      });
+
+      function closeNuevaCatModal() {
+        modalNuevaCat.classList.add('hidden');
+        modalNuevaCat.classList.remove('flex');
+        document.getElementById('formNuevaCategoria').reset();
       }
 
-      formNuevaCat.addEventListener('submit', function(e) {
+      document.getElementById('btnCloseNuevaCatModal').addEventListener('click', closeNuevaCatModal);
+      document.getElementById('btnCancelNuevaCatModal').addEventListener('click', closeNuevaCatModal);
+
+      document.getElementById('formNuevaCategoria').addEventListener('submit', function(e) {
         e.preventDefault();
         const newKey = "cat_" + Date.now();
         const nuevaCat = {
@@ -746,10 +814,12 @@
         saveState();
         updateCardsDisplay();
         syncCategoriasSelects();
+        
+        // Cargar inmediatamente la nueva categoría en el formulario de edición
         catSelector.value = newKey;
         loadCategoriaToForm(newKey);
         closeNuevaCatModal();
-        alert(`¡Categoría "${nuevaCat.titulo}" creada exitosamente!`);
+        alert(`¡Categoría "${nuevaCat.titulo}" creada exitosamente! Podrás modificar sus materias asignadas enseguida.`);
       });
 
       // -----------------------------------------------------------------
@@ -785,10 +855,8 @@
       }
 
       window.deleteProfesor = function(index) {
-        if (profesores.length <= 1) {
-          alert('Debe existir al menos un profesor registrado.');
-          return;
-        }
+        if (profesores.length <= 1) return alert('Debe existir al menos un profesor registrado.');
+        
         const profId = profesores[index].id;
         Object.keys(categorias).forEach(k => {
           if (categorias[k].profesorId === profId) {
@@ -804,14 +872,13 @@
 
       document.getElementById('formNewProfesor').addEventListener('submit', function(e) {
         e.preventDefault();
-        const nuevo = {
+        profesores.push({
           id: "p_" + Date.now(),
           nombre: document.getElementById('profNombre').value.trim(),
           tel: document.getElementById('profTel').value.trim(),
           correo: document.getElementById('profCorreo').value.trim().toLowerCase(),
           especialidad: document.getElementById('profEspecialidad').value.trim()
-        };
-        profesores.push(nuevo);
+        });
         saveState();
         populateProfesorSelect();
         renderProfesoresList();
@@ -824,8 +891,6 @@
       // -----------------------------------------------------------------
       const drawer = document.getElementById('adminDrawer');
       const overlay = document.getElementById('adminDrawerOverlay');
-      const btnOpenDrawer = document.getElementById('btnToggleAdminDrawer');
-      const btnCloseDrawer = document.getElementById('btnCloseAdminDrawer');
 
       function toggleDrawer(open) {
         if (open) {
@@ -840,84 +905,47 @@
         }
       }
 
-      btnOpenDrawer.addEventListener('click', (e) => {
-        e.preventDefault();
-        toggleDrawer(true);
-      });
-      btnCloseDrawer.addEventListener('click', () => toggleDrawer(false));
+      document.getElementById('btnToggleAdminDrawer').addEventListener('click', (e) => { e.preventDefault(); toggleDrawer(true); });
+      document.getElementById('btnCloseAdminDrawer').addEventListener('click', () => toggleDrawer(false));
       overlay.addEventListener('click', () => toggleDrawer(false));
 
-      // Tabs del Drawer
-      const tabBtnCat = document.getElementById('tabBtnCategorias');
-      const tabBtnProf = document.getElementById('tabBtnProfesores');
-      const tabContCat = document.getElementById('tabContentCategorias');
-      const tabContProf = document.getElementById('tabContentProfesores');
-
-      tabBtnCat.addEventListener('click', () => {
-        tabBtnCat.className = "flex-1 py-3 border-b-2 border-blue-900 text-blue-900 bg-white";
-        tabBtnProf.className = "flex-1 py-3 border-b-2 border-transparent hover:text-slate-900";
-        tabContCat.classList.remove('hidden');
-        tabContProf.classList.add('hidden');
+      document.getElementById('tabBtnCategorias').addEventListener('click', () => {
+        document.getElementById('tabBtnCategorias').className = "flex-1 py-3 border-b-2 border-blue-900 text-blue-900 bg-white";
+        document.getElementById('tabBtnProfesores').className = "flex-1 py-3 border-b-2 border-transparent hover:text-slate-900";
+        document.getElementById('tabContentCategorias').classList.remove('hidden');
+        document.getElementById('tabContentProfesores').classList.add('hidden');
       });
 
-      tabBtnProf.addEventListener('click', () => {
-        tabBtnProf.className = "flex-1 py-3 border-b-2 border-blue-900 text-blue-900 bg-white";
-        tabBtnCat.className = "flex-1 py-3 border-b-2 border-transparent hover:text-slate-900";
-        tabContProf.classList.remove('hidden');
-        tabContCat.classList.add('hidden');
+      document.getElementById('tabBtnProfesores').addEventListener('click', () => {
+        document.getElementById('tabBtnProfesores').className = "flex-1 py-3 border-b-2 border-blue-900 text-blue-900 bg-white";
+        document.getElementById('tabBtnCategorias').className = "flex-1 py-3 border-b-2 border-transparent hover:text-slate-900";
+        document.getElementById('tabContentProfesores').classList.remove('hidden');
+        document.getElementById('tabContentCategorias').classList.add('hidden');
       });
 
       // -----------------------------------------------------------------
-      // REQUISITOS OBLIGATORIOS Y ACUDIENTES
+      // CONTROL DE ACUDIENTES Y ENVÍO FINAL
       // -----------------------------------------------------------------
-      const chkEntrevista = document.getElementById('chkEntrevista');
-      const chkExamen = document.getElementById('chkExamen');
-      const btnSubmit = document.getElementById('btnSubmitMatricula');
-      const badge = document.getElementById('requisitosBadge');
-
-      function checkRequisitos() {
-        const listos = chkEntrevista.checked && chkExamen.checked;
-        if (listos) {
-          btnSubmit.disabled = false;
-          btnSubmit.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-pointer shadow transition-all";
-          btnSubmit.innerText = "Oficializar Matrícula";
-          badge.innerHTML = 'Requisitos Verificados: <span class="text-emerald-600 font-bold">Estado Activa</span>';
-        } else {
-          btnSubmit.disabled = true;
-          btnSubmit.className = "w-full bg-slate-300 text-slate-500 font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-not-allowed transition-all";
-          btnSubmit.innerText = "Oficializar Matrícula (Requisitos Incompletos)";
-          badge.innerHTML = '<span class="text-slate-500 font-semibold">Requisitos: Pendientes</span>';
-        }
-      }
-
-      chkEntrevista.addEventListener('change', checkRequisitos);
-      chkExamen.addEventListener('change', checkRequisitos);
-
-      // Modal Acudientes
       let acudientes = [];
-      const modal = document.getElementById('modalAcudiente');
-      const btnOpenModal = document.getElementById('btnOpenModal');
-      const btnCloseModal = document.getElementById('btnCloseModal');
-      const btnCancelModal = document.getElementById('btnCancelModal');
-      const acudienteForm = document.getElementById('acudienteForm');
+      const modalAcudiente = document.getElementById('modalAcudiente');
       const tableBody = document.getElementById('acudientesTableBody');
 
-      btnOpenModal.addEventListener('click', () => {
+      document.getElementById('btnOpenModal').addEventListener('click', () => {
         if (acudientes.length >= 2) return alert('Máximo 2 acudientes permitidos.');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
+        modalAcudiente.classList.remove('hidden');
+        modalAcudiente.classList.add('flex');
       });
 
-      function closeModal() {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        acudienteForm.reset();
+      function closeAcudienteModal() {
+        modalAcudiente.classList.add('hidden');
+        modalAcudiente.classList.remove('flex');
+        document.getElementById('acudienteForm').reset();
       }
 
-      btnCloseModal.addEventListener('click', closeModal);
-      btnCancelModal.addEventListener('click', closeModal);
+      document.getElementById('btnCloseModal').addEventListener('click', closeAcudienteModal);
+      document.getElementById('btnCancelModal').addEventListener('click', closeAcudienteModal);
 
-      acudienteForm.addEventListener('submit', (e) => {
+      document.getElementById('acudienteForm').addEventListener('submit', (e) => {
         e.preventDefault();
         acudientes.push({
           relacion: document.getElementById('modalRelacion').value,
@@ -927,7 +955,7 @@
           direccion: document.getElementById('modalDireccion').value.trim()
         });
         renderTable();
-        closeModal();
+        closeAcudienteModal();
       });
 
       window.deleteAcudiente = function(i) {
@@ -938,9 +966,9 @@
       function renderTable() {
         tableBody.innerHTML = '';
         if (acudientes.length === 0) {
-          tableBody.innerHTML = '<tr id="emptyRow"><td colspan="6" class="p-3 text-center text-slate-400 italic">No hay acudientes registrados (mínimo 1 requerido).</td></tr>';
-          btnOpenModal.disabled = false;
-          btnOpenModal.classList.remove('opacity-50', 'cursor-not-allowed');
+          tableBody.innerHTML = '<tr id="emptyRow"><td colspan="6" class="p-3 text-center text-slate-400 italic">No hay acudientes registrados (mínimo 1).</td></tr>';
+          document.getElementById('btnOpenModal').disabled = false;
+          document.getElementById('btnOpenModal').classList.remove('opacity-50', 'cursor-not-allowed');
           return;
         }
 
@@ -960,37 +988,29 @@
           tableBody.appendChild(tr);
         });
 
-        btnOpenModal.disabled = acudientes.length >= 2;
-        btnOpenModal.classList.toggle('opacity-50', acudientes.length >= 2);
-        btnOpenModal.classList.toggle('cursor-not-allowed', acudientes.length >= 2);
+        const btnOpen = document.getElementById('btnOpenModal');
+        btnOpen.disabled = acudientes.length >= 2;
+        btnOpen.classList.toggle('opacity-50', acudientes.length >= 2);
+        btnOpen.classList.toggle('cursor-not-allowed', acudientes.length >= 2);
       }
 
-      // -----------------------------------------------------------------
-      // REGISTRO DE MATRÍCULA Y AUMENTO AUTOMÁTICO DE CUPOS
-      // -----------------------------------------------------------------
       document.getElementById('matriculaForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
-        if (acudientes.length === 0) {
-          alert('Debe registrar al menos un acudiente para formalizar la matrícula.');
-          return;
-        }
+        if (acudientes.length === 0) return alert('Debe registrar al menos un acudiente para formalizar la matrícula.');
 
         const selectedCatKey = document.getElementById('categoriaSelect').value;
         const cat = categorias[selectedCatKey];
 
-        if (!cat) {
-          alert('Seleccione una categoría válida.');
-          return;
+        if (!cat) return alert('Seleccione una categoría válida.');
+
+        const esPorHoras = cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora'));
+
+        if (!esPorHoras && cat.cuposOcupados >= cat.cuposTotal) {
+          return alert('No hay cupos disponibles en esta categoría.');
         }
 
-        if (!cat.esPorHoras && cat.cuposOcupados >= cat.cuposTotal) {
-          alert('No hay cupos disponibles en esta categoría.');
-          return;
-        }
-
-        // Aumento automático de cupo ocupado al matricular
-        if (!cat.esPorHoras) {
+        if (!esPorHoras) {
           cat.cuposOcupados += 1;
         }
 
@@ -1004,8 +1024,10 @@
         this.reset();
         acudientes = [];
         renderTable();
-        checkRequisitos();
         document.getElementById('tarifaPreview').textContent = 'Tarifa: Seleccione categoría';
+        
+        // Resetear caja de requisitos al estado original y disparar su deshabilitación visual
+        document.getElementById('categoriaSelect').dispatchEvent(new Event('change'));
       });
 
       // Inicialización al cargar
