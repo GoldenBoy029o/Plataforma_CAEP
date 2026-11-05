@@ -1,545 +1,225 @@
-const DB = {
-  catalogoMaterias: [
-    "Matemáticas", "Geometría", "Álgebra", "Estadística", "Castellano / Lengua", 
-    "Comprensión Lectora", "Inglés", "Ciencias Naturales", "Biología", "Química", 
-    "Física", "Ciencias Sociales", "Historia", "Geografía", "Filosofía", 
-    "Ética y Valores", "Informática"
-  ],
-  profesores: JSON.parse(localStorage.getItem('cae_profesores')) || [
-    { id: "p1", nombre: "Profesor 1", tel: "3001234567", correo: "profe@cae.com", especialidad: "Primaria Integral" },
-    { id: "p2", nombre: "Profesor 2", tel: "3119876543", correo: "marta@cae.com", especialidad: "Matemáticas y Lenguaje" },
-    { id: "p3", nombre: "Profesor 3", tel: "3205554433", correo: "andres@cae.com", especialidad: "Bachillerato / Ciencias" }
-  ],
-  categorias: JSON.parse(localStorage.getItem('cae_categorias')) || {
-    cat1: {
-      titulo: "1ra Categoría (Transición a 3º Primaria)", cuposOcupados: 8, cuposTotal: 10, profesorId: "p1",
-      horario: "Lun a Vie: 3:00 PM - 5:00 PM", tarifa: "$120.000/mes",
-      materias: ["Matemáticas", "Ciencias Sociales", "Castellano / Lengua", "Inglés", "Ciencias Naturales"]
-    },
-    cat2: {
-      titulo: "2da Categoría (4º a 6º Grado)", cuposOcupados: 10, cuposTotal: 10, profesorId: "p2",
-      horario: "Lun a Vie: 3:00 PM - 6:00 PM", tarifa: "$120.000/mes",
-      materias: ["Matemáticas", "Geometría", "Ciencias Sociales", "Castellano / Lengua", "Inglés", "Ciencias Naturales"]
-    },
-    cat3: {
-      titulo: "3ra Categoría (7º a 11º Bachillerato)", cuposOcupados: 0, cuposTotal: 0, esPorHoras: true,
-      profesorId: "p3", horario: "Horario según asignación", tarifa: "$30.000 / Hora", materias: []
-    }
-  },
+const DB_Estudiantes = {
+  categorias: JSON.parse(localStorage.getItem('cae_categorias')) || {},
+  estudiantes: JSON.parse(localStorage.getItem('cae_estudiantes')) || [],
   guardar: function() {
-    localStorage.setItem('cae_profesores', JSON.stringify(this.profesores));
+    localStorage.setItem('cae_estudiantes', JSON.stringify(this.estudiantes));
     localStorage.setItem('cae_categorias', JSON.stringify(this.categorias));
-  },
-  getProfesorName: function(id) {
-    const p = this.profesores.find(item => item.id === id);
-    return p ? p.nombre : "Sin asignar";
-  },
-  validarSesion: function() {
-    const session = JSON.parse(localStorage.getItem('cae_session') || '{}');
-    if (session.role !== 'admin') {
-      alert('Acceso restringido a administradores.');
-      window.location.href = 'index.html';
-    }
   }
 };
 
-const UI = {
-  abrirModal: function(id) {
-    const modal = document.getElementById(id);
-    if(modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
+const ModuloEstudiantes = {
+  inicializar: function() {
+    this.poblarFiltroCategorias();
+    this.actualizarEstadosMora();
+    this.renderizarTabla();
+    this.asignarEventos();
   },
-  cerrarModal: function(id) {
-    const modal = document.getElementById(id);
-    if(modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
-  },
-  toggleDrawer: function(open) {
-    const drawer = document.getElementById('adminDrawer');
-    const overlay = document.getElementById('adminDrawerOverlay');
-    if (open) {
-      drawer.classList.remove('-translate-x-full');
-      overlay.classList.remove('hidden');
-      ModuloProfesores.llenarSelects();
-      ModuloCategorias.cargarFormulario(document.getElementById('adminCatSelector').value);
-      ModuloProfesores.renderizarLista();
-    } else {
-      drawer.classList.add('-translate-x-full');
-      overlay.classList.add('hidden');
-    }
-  }
-};
 
-const ModuloCategorias = {
-  autoFormatTarifa: function(e) {
-    let input = e.target;
-    let rawVal = input.value.toLowerCase();
-    let numbers = rawVal.replace(/\D/g, '');
-    if (!numbers) return;
-    
-    let formatted = new Intl.NumberFormat('es-CO').format(parseInt(numbers, 10));
-    let isHourlyCat = false;
-    
-    if(input.id === 'editTarifa') {
-      const catKey = document.getElementById('adminCatSelector').value;
-      const cat = DB.categorias[catKey];
-      isHourlyCat = cat && (cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora')));
-    }
-    
-    let suffix = (isHourlyCat || rawVal.includes('hora')) ? ' / Hora' : '/mes';
-    input.value = `$${formatted}${suffix}`;
-  },
-  actualizarTarjetasVista: function() {
-    const container = document.getElementById('cardsCategoriasContainer');
-    if(!container) return;
-    container.innerHTML = '';
-    Object.keys(DB.categorias).forEach(key => {
-      const cat = DB.categorias[key];
-      const isHourly = cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora'));
-      const isFull = !isHourly && cat.cuposOcupados >= cat.cuposTotal;
-      let cupoBadge = isHourly ? '<span class="text-xs bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded">Por Horas</span>' :
-                      isFull ? `<span class="text-xs bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded">${cat.cuposOcupados}/${cat.cuposTotal} (CUPO LLENO)</span>` :
-                      `<span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">${cat.cuposOcupados}/${cat.cuposTotal} Cupos</span>`;
-      const tags = cat.materias ? cat.materias.map(m => `<span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">${m}</span>`).join('') : '';
-      const pName = isHourly && !cat.profesorId ? 'Por asignación' : DB.getProfesorName(cat.profesorId);
-      container.innerHTML += `
-        <div id="card-${key}" class="bg-white p-4 rounded-xl shadow-md border border-slate-300">
-          <div class="flex justify-between items-center mb-1"><span class="font-bold text-xs text-slate-800">${cat.titulo}</span>${cupoBadge}</div>
-          <p class="text-xs text-slate-500 mb-2">${pName} • ${cat.horario} • ${cat.tarifa}</p>
-          <div class="flex flex-wrap gap-1">${tags}</div>
-        </div>
-      `;
-    });
-    this.sincronizarSelectores();
-  },
-  sincronizarSelectores: function() {
-    const selectMain = document.getElementById('categoriaSelect');
-    const selectAdmin = document.getElementById('adminCatSelector');
-    if(!selectMain || !selectAdmin) return;
-    
-    const currentAdminVal = selectAdmin.value;
-    const currentMainVal = selectMain.value;
-    selectMain.innerHTML = '<option value="">Seleccione una categoría...</option>';
-    selectAdmin.innerHTML = '';
-    Object.keys(DB.categorias).forEach(key => {
-      const cat = DB.categorias[key];
-      const isHourly = cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora'));
-      const isFull = !isHourly && cat.cuposOcupados >= cat.cuposTotal;
-      const optMain = document.createElement('option');
-      optMain.value = key;
-      optMain.textContent = `${cat.titulo} ${isFull ? '- (Cupo Lleno)' : ''}`;
-      if (isFull && !isHourly) optMain.disabled = true;
-      selectMain.appendChild(optMain);
-      const optAdmin = document.createElement('option');
-      optAdmin.value = key;
-      optAdmin.textContent = cat.titulo;
-      selectAdmin.appendChild(optAdmin);
-    });
-    if (currentAdminVal && DB.categorias[currentAdminVal]) selectAdmin.value = currentAdminVal;
-    if (currentMainVal && DB.categorias[currentMainVal]) selectMain.value = currentMainVal;
-  },
-  renderMateriasChecklist: function(materiasSeleccionadas) {
-    const container = document.getElementById('materiasChecklist');
-    if(!container) return;
-    container.innerHTML = '';
-    DB.catalogoMaterias.forEach(mat => {
-      const isChecked = materiasSeleccionadas.includes(mat);
-      container.innerHTML += `
-        <label class="flex items-center gap-1.5 p-1 hover:bg-slate-200/60 rounded cursor-pointer text-slate-700">
-          <input type="checkbox" name="catMateriaCheck" value="${mat}" ${isChecked ? 'checked' : ''} class="rounded text-blue-600">
-          <span>${mat}</span>
-        </label>`;
-    });
-    this.updateMateriasCount();
-    container.querySelectorAll('input[type="checkbox"]').forEach(chk => {
-      chk.addEventListener('change', () => this.updateMateriasCount());
+  poblarFiltroCategorias: function() {
+    const selectorC = document.getElementById('filtroCategoria');
+    const selectEdit = document.getElementById('editCategoriaSelect');
+    Object.keys(DB_Estudiantes.categorias).forEach(key => {
+      selectorC.appendChild(new Option(DB_Estudiantes.categorias[key].titulo, key));
+      selectEdit.appendChild(new Option(DB_Estudiantes.categorias[key].titulo, key));
     });
   },
-  updateMateriasCount: function() {
-    const selected = document.querySelectorAll('#materiasChecklist input[type="checkbox"]:checked');
-    const el = document.getElementById('countMateriasSeleccionadas');
-    if(el) el.textContent = `${selected.length} materias`;
-  },
-  cargarFormulario: function(catKey) {
-    const c = DB.categorias[catKey];
-    if (!c) return;
-    const isHourly = c.esPorHoras || (c.tarifa && c.tarifa.toLowerCase().includes('hora'));
-    const adminCamposRegulares = document.getElementById('adminCamposRegulares');
-    if (isHourly) {
-      adminCamposRegulares.classList.add('hidden');
-      document.getElementById('editCapacidad').required = false;
-      document.getElementById('editHorario').required = false;
-    } else {
-      adminCamposRegulares.classList.remove('hidden');
-      document.getElementById('editCapacidad').required = true;
-      document.getElementById('editHorario').required = true;
-      document.getElementById('editCapacidad').value = c.cuposTotal;
-      document.getElementById('editProfesor').value = c.profesorId;
-      document.getElementById('editHorario').value = c.horario;
-      this.renderMateriasChecklist(c.materias || []);
-    }
-    document.getElementById('editTarifa').value = c.tarifa;
-  },
-  guardarEdicion: function(e) {
-    e.preventDefault();
-    const catKey = document.getElementById('adminCatSelector').value;
-    const c = DB.categorias[catKey];
-    const isHourly = c.esPorHoras || (c.tarifa && c.tarifa.toLowerCase().includes('hora'));
-    if (!isHourly) {
-      const materias = Array.from(document.querySelectorAll('#materiasChecklist input[type="checkbox"]:checked')).map(chk => chk.value);
-      if (materias.length === 0) return alert('Debe seleccionar al menos una materia para la categoría.');
-      c.cuposTotal = parseInt(document.getElementById('editCapacidad').value) || 0;
-      c.profesorId = document.getElementById('editProfesor').value;
-      c.horario = document.getElementById('editHorario').value.trim();
-      c.materias = materias;
-    }
-    c.tarifa = document.getElementById('editTarifa').value.trim();
-    DB.guardar();
-    ModuloCategorias.actualizarTarjetasVista();
-    alert('Categoría actualizada exitosamente.');
-  },
-  crearNueva: function(e) {
-    e.preventDefault();
-    const newKey = "cat_" + Date.now();
-    const tarifaRaw = document.getElementById('newCatTarifa').value.trim();
-    const isHourly = tarifaRaw.toLowerCase().includes('hora');
-    DB.categorias[newKey] = {
-      titulo: document.getElementById('newCatTitulo').value.trim(),
-      cuposOcupados: 0,
-      cuposTotal: isHourly ? 0 : parseInt(document.getElementById('newCatCapacidad').value) || 10,
-      profesorId: isHourly ? "" : document.getElementById('newCatProfesor').value,
-      horario: isHourly ? "Horario según asignación" : document.getElementById('newCatHorario').value.trim(),
-      tarifa: tarifaRaw,
-      materias: isHourly ? [] : ["Matemáticas", "Castellano / Lengua", "Inglés", "Ciencias Naturales"],
-      esPorHoras: isHourly
-    };
-    DB.guardar(); 
-    ModuloCategorias.actualizarTarjetasVista();
-    document.getElementById('adminCatSelector').value = newKey; 
-    ModuloCategorias.cargarFormulario(newKey);
-    UI.cerrarModal('modalNuevaCategoria');
-    document.getElementById('formNuevaCategoria').reset();
-    alert(`¡Categoría "${DB.categorias[newKey].titulo}" creada exitosamente!`);
-  }
-};
 
-const ModuloHorarios = {
-  targetInput: null,
-  abrir: function(e) {
-    this.targetInput = (e.currentTarget.id.includes('New') || e.currentTarget.id === 'newCatHorario') 
-      ? document.getElementById('newCatHorario') 
-      : document.getElementById('editHorario');
-    UI.abrirModal('modalHorarioPicker');
-  },
-  aplicar: function() {
-    const modal = document.getElementById('modalHorarioPicker');
-    const checks = Array.from(modal.querySelectorAll('input[name="diaSemana"]:checked')).map(c => c.value);
-    if (checks.length === 0) return alert('Seleccione al menos un día de clase.');
-    let diasTexto = (checks.length === 5 && checks.join(',') === 'Lun,Mar,Mié,Jue,Vie') ? 'Lun a Vie' :
-                    (checks.length === 6 && checks.join(',') === 'Lun,Mar,Mié,Jue,Vie,Sáb') ? 'Lun a Sáb' : checks.join(', ');
-    const h1 = document.getElementById('pickerHoraInicio').value;
-    const h2 = document.getElementById('pickerHoraFin').value;
-    function format12h(t){ let [h,m]=t.split(':'); h=parseInt(h); let ampm=h>=12?'PM':'AM'; return `${h%12||12}:${m} ${ampm}`; }
-    if(this.targetInput) this.targetInput.value = `${diasTexto}: ${format12h(h1)} - ${format12h(h2)}`;
-    UI.cerrarModal('modalHorarioPicker');
-  }
-};
+  actualizarEstadosMora: function() {
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
+    let moraCount = 0;
 
-const ModuloProfesores = {
-  llenarSelects: function() {
-    const selectEdit = document.getElementById('editProfesor');
-    const selectNew = document.getElementById('newCatProfesor');
-    if(selectEdit) selectEdit.innerHTML = '';
-    if(selectNew) selectNew.innerHTML = '';
-    DB.profesores.forEach(p => {
-      if(selectEdit) selectEdit.appendChild(new Option(`${p.nombre} (${p.correo})`, p.id));
-      if(selectNew) selectNew.appendChild(new Option(`${p.nombre} (${p.correo})`, p.id));
-    });
-  },
-  renderizarLista: function() {
-    const list = document.getElementById('profesoresList');
-    if(!list) return;
-    list.innerHTML = '';
-    DB.profesores.forEach((prof, idx) => {
-      list.innerHTML += `<div class="p-2.5 bg-white border border-slate-200 rounded-lg flex items-center justify-between text-xs">
-        <div><div class="font-bold text-slate-900">${prof.nombre}</div>
-        <div class="text-[11px] text-slate-500">Tel: ${prof.tel} • ${prof.especialidad}</div>
-        <div class="text-[11px] text-blue-700 font-mono">${prof.correo}</div></div>
-        <button type="button" onclick="window.deleteProfesor(${idx})" class="text-rose-600 font-bold ml-2">Eliminar</button></div>`;
-    });
-  },
-  eliminar: function(index) {
-    if (DB.profesores.length <= 1) return alert('Debe existir al menos un profesor registrado.');
-    const profId = DB.profesores[index].id;
-    Object.keys(DB.categorias).forEach(k => {
-      if (DB.categorias[k].profesorId === profId) DB.categorias[k].profesorId = DB.profesores.find(p => p.id !== profId).id;
-    });
-    DB.profesores.splice(index, 1);
-    DB.guardar(); 
-    this.llenarSelects(); 
-    this.renderizarLista(); 
-    ModuloCategorias.actualizarTarjetasVista();
-  },
-  crear: function(e) {
-    e.preventDefault();
-    DB.profesores.push({
-      id: "p_" + Date.now(), nombre: document.getElementById('profNombre').value.trim(),
-      tel: document.getElementById('profTel').value.trim(),
-      correo: document.getElementById('profCorreo').value.trim().toLowerCase(),
-      especialidad: document.getElementById('profEspecialidad').value.trim()
-    });
-    DB.guardar(); 
-    ModuloProfesores.llenarSelects(); 
-    ModuloProfesores.renderizarLista(); 
-    e.target.reset(); 
-    alert('Profesor registrado exitosamente.');
-  }
-};
+    DB_Estudiantes.estudiantes.forEach(est => {
+      const fechaVenc = new Date(est.proximoPago + "T00:00:00");
+      const fechaLimite = new Date(fechaVenc);
+      fechaLimite.setDate(fechaLimite.getDate() + 5); // 5 días de gracia
 
-const ModuloMatriculas = {
-  acudientes: [],
-  tempDataHoras: null,
-  selectCategoriaPrevia: "",
-  hourlyRateForCalc: 0,
-  evaluarCambioCategoria: function() {
-    const catKey = document.getElementById('categoriaSelect').value;
-    const cat = DB.categorias[catKey];
-    const preview = document.getElementById('tarifaPreview');
-    const reqBox = document.getElementById('requisitosBox');
-    this.tempDataHoras = null;
-    if (cat) {
-      const isHourly = cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora'));
-      if (isHourly) {
-        this.abrirConfigHoras(catKey);
+      if (hoy > fechaLimite) {
+        est.estado = 'mora'; moraCount++;
+      } else if (hoy > fechaVenc && hoy <= fechaLimite) {
+        est.estado = 'gracia';
       } else {
-        preview.textContent = `Tarifa: ${cat.tarifa} fija`;
-        this.selectCategoriaPrevia = catKey;
+        est.estado = 'aldia';
       }
-      if (isHourly) {
-        reqBox.classList.add('opacity-50', 'pointer-events-none');
-        document.getElementById('chkEntrevista').checked = false; 
-        document.getElementById('chkExamen').checked = false;
-        document.getElementById('chkEntrevista').disabled = true; 
-        document.getElementById('chkExamen').disabled = true;
-        document.getElementById('puntajeInput').disabled = true; 
-        document.getElementById('indicadoresInput').disabled = true;
-      } else {
-        reqBox.classList.remove('opacity-50', 'pointer-events-none');
-        document.getElementById('chkEntrevista').disabled = false; 
-        document.getElementById('chkExamen').disabled = false;
-        document.getElementById('puntajeInput').disabled = false; 
-        document.getElementById('indicadoresInput').disabled = false;
+    });
+    DB_Estudiantes.guardar();
+    document.getElementById('contadorMoraTop').textContent = moraCount;
+  },
+
+  renderizarTabla: function() {
+    const tbody = document.getElementById('tablaEstudiantes');
+    const fTexto = document.getElementById('filtroBuscar').value.toLowerCase();
+    const fCat = document.getElementById('filtroCategoria').value;
+    const fEstado = document.getElementById('filtroEstado').value;
+
+    tbody.innerHTML = '';
+    let filtrados = 0;
+
+    DB_Estudiantes.estudiantes.forEach(est => {
+      const coTexto = est.nombres.toLowerCase().includes(fTexto) || est.apellidos.toLowerCase().includes(fTexto) || est.documento.includes(fTexto);
+      const coCat = fCat === 'todas' || est.categoriaId === fCat;
+      const coEst = fEstado === 'todos' || est.estado === fEstado;
+
+      if (coTexto && coCat && coEst) {
+        filtrados++;
+        const catName = DB_Estudiantes.categorias[est.categoriaId] ? DB_Estudiantes.categorias[est.categoriaId].titulo : 'Sin categoría';
+        
+        let badgeEstado = '';
+        if(est.estado === 'mora') badgeEstado = '<span class="px-2 py-0.5 rounded bg-red-100 text-red-800 font-bold uppercase text-[10px]">En Mora</span>';
+        else if(est.estado === 'gracia') badgeEstado = '<span class="px-2 py-0.5 rounded bg-yellow-100 text-yellow-800 font-bold uppercase text-[10px]">Per. Gracia</span>';
+        else badgeEstado = '<span class="px-2 py-0.5 rounded bg-green-100 text-green-800 font-bold uppercase text-[10px]">Al Día</span>';
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-gray-50 transition-colors group cursor-pointer border-b border-gray-200" onclick="ModuloEstudiantes.abrirModalEdicion('${est.documento}')">
+            <td class="p-3 font-semibold text-gray-700">${est.documento}</td>
+            <td class="p-3 font-bold text-gray-900">${est.nombres} ${est.apellidos}</td>
+            <td class="p-3 text-gray-600 truncate max-w-[150px]">${catName}</td>
+            <td class="p-3 text-gray-600">${est.fechaMatricula}</td>
+            <td class="p-3 font-bold ${est.estado === 'mora' ? 'text-red-600' : 'text-gray-700'}">${est.proximoPago}</td>
+            <td class="p-3 text-center">${badgeEstado}</td>
+            <td class="p-3 text-center"><button class="text-blue-600 font-bold hover:underline text-[11px]">Gestionar</button></td>
+          </tr>
+        `;
       }
-    } else {
-      preview.textContent = 'Tarifa: Seleccione categoría';
-      reqBox.classList.remove('opacity-50', 'pointer-events-none');
-      this.selectCategoriaPrevia = "";
-    }
-    this.validarRequisitos();
-  },
-  validarRequisitos: function() {
-    const catKey = document.getElementById('categoriaSelect').value;
-    const cat = DB.categorias[catKey];
-    const esExento = catKey && cat && (cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora')));
-    const chkEntrevista = document.getElementById('chkEntrevista');
-    const chkExamen = document.getElementById('chkExamen');
-    const listos = esExento || (chkEntrevista.checked && chkExamen.checked);
-    const btnSubmit = document.getElementById('btnSubmitMatricula');
-    const badge = document.getElementById('requisitosBadge');
-    if (listos && catKey) {
-      btnSubmit.disabled = false;
-      btnSubmit.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-pointer shadow transition-all";
-      btnSubmit.innerText = "Oficializar Matrícula";
-      badge.innerHTML = esExento 
-        ? 'Requisitos: <span class="text-blue-600 font-bold">No Aplican (Exento)</span>' 
-        : 'Requisitos Verificados: <span class="text-emerald-600 font-bold">Estado Activa</span>';
-    } else {
-      btnSubmit.disabled = true;
-      btnSubmit.className = "w-full bg-slate-300 text-slate-500 font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-not-allowed transition-all";
-      btnSubmit.innerText = "Oficializar Matrícula (Requisitos Incompletos)";
-      badge.innerHTML = '<span class="text-slate-500 font-semibold">Requisitos: Pendientes</span>';
-    }
-  },
-  abrirConfigHoras: function(catKey) {
-    const cat = DB.categorias[catKey];
-    this.hourlyRateForCalc = parseInt(cat.tarifa.replace(/\D/g, ''), 10) || 0;
-    const selectProf = document.getElementById('configCatHorasProfesor');
-    selectProf.innerHTML = '<option value="">Seleccione profesor...</option>';
-    DB.profesores.forEach(p => selectProf.appendChild(new Option(`${p.nombre} (${p.especialidad})`, p.id)));
-    const matContainer = document.getElementById('cfgMateriasList');
-    matContainer.innerHTML = '';
-    DB.catalogoMaterias.forEach(mat => {
-      matContainer.innerHTML += `<label class="flex items-center gap-1 p-1 hover:bg-slate-200/60 rounded cursor-pointer text-slate-700">
-        <input type="checkbox" name="cfgMateriaCheck" value="${mat}" class="rounded text-blue-600"> <span>${mat}</span>
-      </label>`;
     });
-    this.recalcularPrecioHoras();
-    UI.abrirModal('modalConfigCatPorHoras');
+
+    if (filtrados === 0) tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-gray-500 italic">No se encontraron estudiantes.</td></tr>';
+    document.getElementById('totalEstudiantesBadge').textContent = `Total: ${filtrados}`;
   },
-  recalcularPrecioHoras: function() {
-    const numDias = document.querySelectorAll('input[name="cfgDia"]:checked').length;
-    const tInicio = document.getElementById('cfgHoraInicio').value;
-    const tFin = document.getElementById('cfgHoraFin').value;
-    let totalHoras = 0;
-    if (tInicio && tFin && numDias > 0) {
-      const [h1, m1] = tInicio.split(':').map(Number);
-      const [h2, m2] = tFin.split(':').map(Number);
-      let diff = (h2 + m2/60) - (h1 + m1/60);
-      if (diff > 0) totalHoras = diff * numDias;
-    }
-    const totalDinero = totalHoras * ModuloMatriculas.hourlyRateForCalc;
-    document.getElementById('cfgPrecioCalculado').textContent = `$${new Intl.NumberFormat('es-CO').format(totalDinero)} / Total`;
-    return { totalHoras, totalDinero };
-  },
-  guardarConfigHoras: function(e) {
-    e.preventDefault();
-    const dias = Array.from(document.querySelectorAll('input[name="cfgDia"]:checked')).map(c => c.value);
-    const materias = Array.from(document.querySelectorAll('input[name="cfgMateriaCheck"]:checked')).map(c => c.value);
-    if (dias.length === 0) return alert('Seleccione al menos un día.');
-    if (materias.length === 0) return alert('Seleccione al menos una materia.');
-    const resCalc = ModuloMatriculas.recalcularPrecioHoras();
-    if(resCalc.totalHoras <= 0) return alert('El rango de horas es inválido.');
-    ModuloMatriculas.tempDataHoras = {
-      profesorId: document.getElementById('configCatHorasProfesor').value,
-      totalCobro: resCalc.totalDinero
-    };
-    document.getElementById('tarifaPreview').textContent = `Tarifa Calculada: $${new Intl.NumberFormat('es-CO').format(resCalc.totalDinero)} (Jornada)`;
-    ModuloMatriculas.selectCategoriaPrevia = document.getElementById('categoriaSelect').value;
-    UI.cerrarModal('modalConfigCatPorHoras');
-    document.getElementById('formConfigCatHoras').reset();
-    ModuloMatriculas.validarRequisitos();
-  },
-  agregarAcudiente: function(e) {
-    e.preventDefault();
-    this.acudientes.push({
-      relacion: document.getElementById('modalRelacion').value,
-      nombre: document.getElementById('modalNombre').value.trim(),
-      tel: document.getElementById('modalTel').value.trim(),
-      correo: document.getElementById('modalCorreo').value.trim(),
-      direccion: document.getElementById('modalDireccion').value.trim()
-    });
-    this.renderTablaAcudientes();
-    UI.cerrarModal('modalAcudiente');
-    document.getElementById('acudienteForm').reset();
-  },
-  eliminarAcudiente: function(i) {
-    this.acudientes.splice(i, 1);
-    this.renderTablaAcudientes();
-  },
-  renderTablaAcudientes: function() {
-    const tBody = document.getElementById('acudientesTableBody');
-    tBody.innerHTML = '';
-    if (this.acudientes.length === 0) {
-      tBody.innerHTML = '<tr id="emptyRow"><td colspan="6" class="p-3 text-center text-slate-400 italic">No hay acudientes registrados (mínimo 1).</td></tr>';
+
+  abrirModalEdicion: function(docId) {
+    const estudiante = DB_Estudiantes.estudiantes.find(e => e.documento === docId);
+    if (!estudiante) return;
+
+    document.getElementById('editEstudianteId').value = estudiante.documento;
+    document.getElementById('modalDocEstudiante').textContent = `Documento: ${estudiante.documento}`;
+    document.getElementById('editNombres').value = estudiante.nombres;
+    document.getElementById('editApellidos').value = estudiante.apellidos;
+    document.getElementById('editCategoriaSelect').value = estudiante.categoriaId;
+    document.getElementById('infoFechaMatricula').textContent = estudiante.fechaMatricula;
+    document.getElementById('editFechaProximoPago').value = estudiante.proximoPago;
+
+    const badge = document.getElementById('estadoPagoBadge');
+    if (estudiante.estado === 'mora') {
+      badge.className = "text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-red-100 text-red-800 border border-red-200"; badge.textContent = "EN MORA";
+    } else if (estudiante.estado === 'gracia') {
+      badge.className = "text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-yellow-100 text-yellow-800 border border-yellow-200"; badge.textContent = "EN GRACIA (5 DÍAS)";
     } else {
-      this.acudientes.forEach((item, index) => {
-        tBody.innerHTML += `<tr class="border-b border-slate-200">
-          <td class="p-2 font-medium text-slate-700">${item.relacion}</td><td class="p-2 font-semibold text-slate-900">${item.nombre}</td>
-          <td class="p-2 text-slate-600">${item.tel}</td><td class="p-2 text-slate-600">${item.correo}</td>
-          <td class="p-2 text-slate-600">${item.direccion}</td>
-          <td class="p-2 text-center"><button type="button" onclick="window.deleteAcudiente(${index})" class="text-rose-600 hover:text-rose-800 font-bold text-xs">Eliminar</button></td>
-        </tr>`;
+      badge.className = "text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-green-100 text-green-800 border border-green-200"; badge.textContent = "AL DÍA";
+    }
+
+    // Dibujar historial
+    const listaHistorial = document.getElementById('listaHistorialPagos');
+    listaHistorial.innerHTML = '';
+    if(!estudiante.historialPagos || estudiante.historialPagos.length === 0) {
+      listaHistorial.innerHTML = '<div class="text-xs text-gray-400 italic py-2">No hay pagos registrados.</div>';
+    } else {
+      // Revertimos para ver el más reciente primero
+      [...estudiante.historialPagos].reverse().forEach((pago, index) => {
+        listaHistorial.innerHTML += `
+          <div class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-200 text-[11px]">
+            <span class="font-semibold text-gray-700">Pago #${estudiante.historialPagos.length - index}</span>
+            <span class="text-gray-500">${pago.fecha}</span>
+            <span class="font-bold text-green-700">${pago.monto}</span>
+          </div>`;
       });
     }
-    const btnOpen = document.getElementById('btnOpenModal');
-    btnOpen.disabled = this.acudientes.length >= 2;
-    btnOpen.classList.toggle('opacity-50', this.acudientes.length >= 2);
-    btnOpen.classList.toggle('cursor-not-allowed', this.acudientes.length >= 2);
+
+    document.getElementById('inputMontoPago').value = '';
+    const modal = document.getElementById('modalEdicionEstudiante');
+    modal.classList.remove('hidden'); modal.classList.add('flex');
   },
-  oficializarMatricula: function(e) {
+
+  cerrarModal: function() {
+    const modal = document.getElementById('modalEdicionEstudiante');
+    modal.classList.add('hidden'); modal.classList.remove('flex');
+  },
+
+  registrarPago: function() {
+    const docId = document.getElementById('editEstudianteId').value;
+    const estudiante = DB_Estudiantes.estudiantes.find(e => e.documento === docId);
+    const montoRaw = document.getElementById('inputMontoPago').value.replace(/\D/g, '');
+    
+    if (!montoRaw) return alert('Ingrese un monto válido.');
+    const montoFormateado = `$${new Intl.NumberFormat('es-CO').format(montoRaw)}`;
+    
+    // Obtiene el día exacto en que se realiza el pago (Hoy)
+    const hoy = new Date();
+    const fechaPago = hoy.toISOString().split('T')[0];
+
+    // Adelantar próximo pago 30 días desde HOY
+    const fechaNueva = new Date(hoy);
+    fechaNueva.setDate(fechaNueva.getDate() + 30);
+    const nuevaFechaVenc = fechaNueva.toISOString().split('T')[0];
+
+    // Guardar en historial
+    if(!estudiante.historialPagos) estudiante.historialPagos = [];
+    estudiante.historialPagos.push({ fecha: fechaPago, monto: montoFormateado });
+    
+    estudiante.proximoPago = nuevaFechaVenc;
+    DB_Estudiantes.guardar();
+    
+    this.actualizarEstadosMora();
+    this.renderizarTabla();
+    this.abrirModalEdicion(docId); // Recargar modal para ver cambios
+    alert(`Pago de ${montoFormateado} registrado exitosamente. Próximo vencimiento será el: ${nuevaFechaVenc}.`);
+  },
+
+  guardarEdicion: function(e) {
     e.preventDefault();
-    if (ModuloMatriculas.acudientes.length === 0) return alert('Debe registrar al menos un acudiente para formalizar la matrícula.');
-    const selectedCatKey = document.getElementById('categoriaSelect').value;
-    const cat = DB.categorias[selectedCatKey];
-    if (!cat) return alert('Seleccione una categoría válida.');
-    const isHourly = cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora'));
-    if (!isHourly) {
-      if (cat.cuposOcupados >= cat.cuposTotal) return alert('No hay cupos disponibles en esta categoría.');
-      cat.cuposOcupados += 1;
+    const docId = document.getElementById('editEstudianteId').value;
+    const estudiante = DB_Estudiantes.estudiantes.find(e => e.documento === docId);
+    const catAnterior = estudiante.categoriaId;
+    const catNueva = document.getElementById('editCategoriaSelect').value;
+
+    estudiante.nombres = document.getElementById('editNombres').value.trim();
+    estudiante.apellidos = document.getElementById('editApellidos').value.trim();
+    estudiante.categoriaId = catNueva;
+    estudiante.proximoPago = document.getElementById('editFechaProximoPago').value;
+
+    if (catAnterior !== catNueva) {
+      if(DB_Estudiantes.categorias[catAnterior] && !DB_Estudiantes.categorias[catAnterior].esPorHoras) {
+        DB_Estudiantes.categorias[catAnterior].cuposOcupados = Math.max(0, DB_Estudiantes.categorias[catAnterior].cuposOcupados - 1);
+      }
+      if(DB_Estudiantes.categorias[catNueva] && !DB_Estudiantes.categorias[catNueva].esPorHoras) {
+        DB_Estudiantes.categorias[catNueva].cuposOcupados += 1;
+      }
     }
-    DB.guardar(); 
-    ModuloCategorias.actualizarTarjetasVista();
-    const nombreEst = document.getElementById('nombres').value; 
-    const apellidoEst = document.getElementById('apellidos').value;
-    if(isHourly && ModuloMatriculas.tempDataHoras) {
-        alert(`¡Matrícula por horas formalizada exitosamente para ${nombreEst} ${apellidoEst}!\nProfesor: ${DB.getProfesorName(ModuloMatriculas.tempDataHoras.profesorId)}\nTotal: $${new Intl.NumberFormat('es-CO').format(ModuloMatriculas.tempDataHoras.totalCobro)}`);
-    } else {
-        alert(`¡Matrícula formalizada exitosamente para ${nombreEst} ${apellidoEst}! Se ha asignado y actualizado el cupo en ${cat.titulo}.`);
+    DB_Estudiantes.guardar();
+    this.actualizarEstadosMora(); this.renderizarTabla(); this.cerrarModal();
+    alert('Datos actualizados correctamente.');
+  },
+
+  eliminarEstudiante: function() {
+    const docId = document.getElementById('editEstudianteId').value;
+    if (!confirm(`¿Está seguro de eliminar al estudiante con documento ${docId}? Esta acción borrará su historial completo.`)) return;
+
+    const index = DB_Estudiantes.estudiantes.findIndex(e => e.documento === docId);
+    const estudiante = DB_Estudiantes.estudiantes[index];
+
+    if (DB_Estudiantes.categorias[estudiante.categoriaId] && !DB_Estudiantes.categorias[estudiante.categoriaId].esPorHoras) {
+      DB_Estudiantes.categorias[estudiante.categoriaId].cuposOcupados = Math.max(0, DB_Estudiantes.categorias[estudiante.categoriaId].cuposOcupados - 1);
     }
-    e.target.reset();
-    ModuloMatriculas.acudientes = []; 
-    ModuloMatriculas.tempDataHoras = null; 
-    ModuloMatriculas.selectCategoriaPrevia = "";
-    ModuloMatriculas.renderTablaAcudientes(); 
-    document.getElementById('tarifaPreview').textContent = 'Tarifa: Seleccione categoría';
-    document.getElementById('categoriaSelect').dispatchEvent(new Event('change'));
+    DB_Estudiantes.estudiantes.splice(index, 1);
+    DB_Estudiantes.guardar();
+    this.actualizarEstadosMora(); this.renderizarTabla(); this.cerrarModal();
+  },
+
+  asignarEventos: function() {
+    document.getElementById('filtroBuscar').addEventListener('input', () => this.renderizarTabla());
+    document.getElementById('filtroCategoria').addEventListener('change', () => this.renderizarTabla());
+    document.getElementById('filtroEstado').addEventListener('change', () => this.renderizarTabla());
+    document.getElementById('btnCloseEditModal').addEventListener('click', () => this.cerrarModal());
+    document.getElementById('btnCancelEdit').addEventListener('click', () => this.cerrarModal());
+    document.getElementById('formEditarEstudiante').addEventListener('submit', (e) => this.guardarEdicion(e));
+    document.getElementById('btnRegistrarPago').addEventListener('click', () => this.registrarPago());
+    document.getElementById('btnEliminarEstudiante').addEventListener('click', () => this.eliminarEstudiante());
+
+    document.getElementById('inputMontoPago').addEventListener('input', function(e) {
+      let nums = e.target.value.replace(/\D/g, '');
+      if (nums) e.target.value = `$${new Intl.NumberFormat('es-CO').format(nums)}`;
+      else e.target.value = '';
+    });
   }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  DB.validarSesion();
-  window.deleteProfesor = (idx) => ModuloProfesores.eliminar(idx);
-  window.deleteAcudiente = (idx) => ModuloMatriculas.eliminarAcudiente(idx);
-
-  ModuloCategorias.actualizarTarjetasVista();
-
-  if(document.getElementById('editTarifa')) document.getElementById('editTarifa').addEventListener('blur', ModuloCategorias.autoFormatTarifa);
-  if(document.getElementById('newCatTarifa')) document.getElementById('newCatTarifa').addEventListener('blur', ModuloCategorias.autoFormatTarifa);
-
-  if(document.getElementById('btnToggleAdminDrawer')) document.getElementById('btnToggleAdminDrawer').addEventListener('click', (e) => { e.preventDefault(); UI.toggleDrawer(true); });
-  if(document.getElementById('btnCloseAdminDrawer')) document.getElementById('btnCloseAdminDrawer').addEventListener('click', () => UI.toggleDrawer(false));
-  if(document.getElementById('adminDrawerOverlay')) document.getElementById('adminDrawerOverlay').addEventListener('click', () => UI.toggleDrawer(false));
-
-  if(document.getElementById('tabBtnCategorias')) document.getElementById('tabBtnCategorias').addEventListener('click', (e) => {
-    e.target.className = "flex-1 py-3 border-b-2 border-blue-900 text-blue-900 bg-white";
-    document.getElementById('tabBtnProfesores').className = "flex-1 py-3 border-b-2 border-transparent hover:text-slate-900";
-    document.getElementById('tabContentCategorias').classList.remove('hidden');
-    document.getElementById('tabContentProfesores').classList.add('hidden');
-  });
-  if(document.getElementById('tabBtnProfesores')) document.getElementById('tabBtnProfesores').addEventListener('click', (e) => {
-    e.target.className = "flex-1 py-3 border-b-2 border-blue-900 text-blue-900 bg-white";
-    document.getElementById('tabBtnCategorias').className = "flex-1 py-3 border-b-2 border-transparent hover:text-slate-900";
-    document.getElementById('tabContentProfesores').classList.remove('hidden');
-    document.getElementById('tabContentCategorias').classList.add('hidden');
-  });
-
-  if(document.getElementById('adminCatSelector')) document.getElementById('adminCatSelector').addEventListener('change', (e) => ModuloCategorias.cargarFormulario(e.target.value));
-  if(document.getElementById('formEditCategoria')) document.getElementById('formEditCategoria').addEventListener('submit', ModuloCategorias.guardarEdicion);
-
-  if(document.getElementById('btnNuevaCategoriaModal')) document.getElementById('btnNuevaCategoriaModal').addEventListener('click', () => {
-    ModuloProfesores.llenarSelects();
-    UI.abrirModal('modalNuevaCategoria');
-  });
-  if(document.getElementById('btnCloseNuevaCatModal')) document.getElementById('btnCloseNuevaCatModal').addEventListener('click', () => UI.cerrarModal('modalNuevaCategoria'));
-  if(document.getElementById('btnCancelNuevaCatModal')) document.getElementById('btnCancelNuevaCatModal').addEventListener('click', () => UI.cerrarModal('modalNuevaCategoria'));
-  if(document.getElementById('formNuevaCategoria')) document.getElementById('formNuevaCategoria').addEventListener('submit', ModuloCategorias.crearNueva);
-
-  if(document.getElementById('formNewProfesor')) document.getElementById('formNewProfesor').addEventListener('submit', ModuloProfesores.crear);
-
-  const inputsHorario = ['btnAbrirPickerHorario', 'editHorario', 'btnAbrirPickerHorarioNew', 'newCatHorario'];
-  inputsHorario.forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.addEventListener('click', (e) => ModuloHorarios.abrir(e));
-  });
-  if(document.getElementById('btnCloseHorarioPicker')) document.getElementById('btnCloseHorarioPicker').addEventListener('click', () => UI.cerrarModal('modalHorarioPicker'));
-  if(document.getElementById('btnAceptarHorario')) document.getElementById('btnAceptarHorario').addEventListener('click', () => ModuloHorarios.aplicar());
-
-  if(document.getElementById('categoriaSelect')) document.getElementById('categoriaSelect').addEventListener('change', () => ModuloMatriculas.evaluarCambioCategoria());
-  if(document.getElementById('chkEntrevista')) document.getElementById('chkEntrevista').addEventListener('change', () => ModuloMatriculas.validarRequisitos());
-  if(document.getElementById('chkExamen')) document.getElementById('chkExamen').addEventListener('change', () => ModuloMatriculas.validarRequisitos());
-  if(document.getElementById('matriculaForm')) document.getElementById('matriculaForm').addEventListener('submit', ModuloMatriculas.oficializarMatricula);
-
-  if(document.getElementById('btnCloseCatHorasModal')) document.getElementById('btnCloseCatHorasModal').addEventListener('click', () => {
-    UI.cerrarModal('modalConfigCatPorHoras');
-    document.getElementById('categoriaSelect').value = ModuloMatriculas.selectCategoriaPrevia;
-    document.getElementById('categoriaSelect').dispatchEvent(new Event('change'));
-  });
-  document.querySelectorAll('.calcular-horas').forEach(el => el.addEventListener('change', ModuloMatriculas.recalcularPrecioHoras));
-  if(document.getElementById('formConfigCatHoras')) document.getElementById('formConfigCatHoras').addEventListener('submit', ModuloMatriculas.guardarConfigHoras);
-
-  if(document.getElementById('btnOpenModal')) document.getElementById('btnOpenModal').addEventListener('click', () => {
-    if (ModuloMatriculas.acudientes.length >= 2) return alert('Máximo 2 acudientes permitidos.');
-    UI.abrirModal('modalAcudiente');
-  });
-  if(document.getElementById('btnCloseModal')) document.getElementById('btnCloseModal').addEventListener('click', () => UI.cerrarModal('modalAcudiente'));
-  if(document.getElementById('btnCancelModal')) document.getElementById('btnCancelModal').addEventListener('click', () => UI.cerrarModal('modalAcudiente'));
-  if(document.getElementById('acudienteForm')) document.getElementById('acudienteForm').addEventListener('submit', (e) => ModuloMatriculas.agregarAcudiente(e));
-});
+document.addEventListener('DOMContentLoaded', () => { ModuloEstudiantes.inicializar(); });
