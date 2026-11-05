@@ -1,6 +1,3 @@
-// ==========================================
-// 1. BASE DE DATOS Y ESTADO GLOBAL (DB)
-// ==========================================
 const DB = {
   catalogoMaterias: [
     "Matemáticas", "Geometría", "Álgebra", "Estadística", "Castellano / Lengua", 
@@ -29,17 +26,14 @@ const DB = {
       profesorId: "p3", horario: "Horario según asignación", tarifa: "$30.000 / Hora", materias: []
     }
   },
-  
   guardar: function() {
     localStorage.setItem('cae_profesores', JSON.stringify(this.profesores));
     localStorage.setItem('cae_categorias', JSON.stringify(this.categorias));
   },
-  
   getProfesorName: function(id) {
     const p = this.profesores.find(item => item.id === id);
     return p ? p.nombre : "Sin asignar";
   },
-
   validarSesion: function() {
     const session = JSON.parse(localStorage.getItem('cae_session') || '{}');
     if (session.role !== 'admin') {
@@ -49,19 +43,14 @@ const DB = {
   }
 };
 
-// ==========================================
-// 2. CONTROLADORES DE INTERFAZ (UI)
-// ==========================================
 const UI = {
   abrirModal: function(id) {
     const modal = document.getElementById(id);
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
+    if(modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
   },
   cerrarModal: function(id) {
     const modal = document.getElementById(id);
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
+    if(modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
   },
   toggleDrawer: function(open) {
     const drawer = document.getElementById('adminDrawer');
@@ -79,11 +68,7 @@ const UI = {
   }
 };
 
-// ==========================================
-// 3. MÓDULO DE CATEGORÍAS (PANEL ADMIN)
-// ==========================================
 const ModuloCategorias = {
-  
   autoFormatTarifa: function(e) {
     let input = e.target;
     let rawVal = input.value.toLowerCase();
@@ -102,23 +87,19 @@ const ModuloCategorias = {
     let suffix = (isHourlyCat || rawVal.includes('hora')) ? ' / Hora' : '/mes';
     input.value = `$${formatted}${suffix}`;
   },
-
   actualizarTarjetasVista: function() {
     const container = document.getElementById('cardsCategoriasContainer');
+    if(!container) return;
     container.innerHTML = '';
-
     Object.keys(DB.categorias).forEach(key => {
       const cat = DB.categorias[key];
       const isHourly = cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora'));
       const isFull = !isHourly && cat.cuposOcupados >= cat.cuposTotal;
-      
       let cupoBadge = isHourly ? '<span class="text-xs bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded">Por Horas</span>' :
                       isFull ? `<span class="text-xs bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded">${cat.cuposOcupados}/${cat.cuposTotal} (CUPO LLENO)</span>` :
                       `<span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">${cat.cuposOcupados}/${cat.cuposTotal} Cupos</span>`;
-
       const tags = cat.materias ? cat.materias.map(m => `<span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">${m}</span>`).join('') : '';
       const pName = isHourly && !cat.profesorId ? 'Por asignación' : DB.getProfesorName(cat.profesorId);
-
       container.innerHTML += `
         <div id="card-${key}" class="bg-white p-4 rounded-xl shadow-md border border-slate-300">
           <div class="flex justify-between items-center mb-1"><span class="font-bold text-xs text-slate-800">${cat.titulo}</span>${cupoBadge}</div>
@@ -129,39 +110,35 @@ const ModuloCategorias = {
     });
     this.sincronizarSelectores();
   },
-
   sincronizarSelectores: function() {
     const selectMain = document.getElementById('categoriaSelect');
     const selectAdmin = document.getElementById('adminCatSelector');
+    if(!selectMain || !selectAdmin) return;
+    
     const currentAdminVal = selectAdmin.value;
     const currentMainVal = selectMain.value;
-
     selectMain.innerHTML = '<option value="">Seleccione una categoría...</option>';
     selectAdmin.innerHTML = '';
-
     Object.keys(DB.categorias).forEach(key => {
       const cat = DB.categorias[key];
       const isHourly = cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora'));
       const isFull = !isHourly && cat.cuposOcupados >= cat.cuposTotal;
-
       const optMain = document.createElement('option');
       optMain.value = key;
       optMain.textContent = `${cat.titulo} ${isFull ? '- (Cupo Lleno)' : ''}`;
       if (isFull && !isHourly) optMain.disabled = true;
       selectMain.appendChild(optMain);
-
       const optAdmin = document.createElement('option');
       optAdmin.value = key;
       optAdmin.textContent = cat.titulo;
       selectAdmin.appendChild(optAdmin);
     });
-
     if (currentAdminVal && DB.categorias[currentAdminVal]) selectAdmin.value = currentAdminVal;
     if (currentMainVal && DB.categorias[currentMainVal]) selectMain.value = currentMainVal;
   },
-
   renderMateriasChecklist: function(materiasSeleccionadas) {
     const container = document.getElementById('materiasChecklist');
+    if(!container) return;
     container.innerHTML = '';
     DB.catalogoMaterias.forEach(mat => {
       const isChecked = materiasSeleccionadas.includes(mat);
@@ -176,19 +153,16 @@ const ModuloCategorias = {
       chk.addEventListener('change', () => this.updateMateriasCount());
     });
   },
-
   updateMateriasCount: function() {
     const selected = document.querySelectorAll('#materiasChecklist input[type="checkbox"]:checked');
-    document.getElementById('countMateriasSeleccionadas').textContent = `${selected.length} materias`;
+    const el = document.getElementById('countMateriasSeleccionadas');
+    if(el) el.textContent = `${selected.length} materias`;
   },
-
   cargarFormulario: function(catKey) {
     const c = DB.categorias[catKey];
     if (!c) return;
-    
     const isHourly = c.esPorHoras || (c.tarifa && c.tarifa.toLowerCase().includes('hora'));
     const adminCamposRegulares = document.getElementById('adminCamposRegulares');
-    
     if (isHourly) {
       adminCamposRegulares.classList.add('hidden');
       document.getElementById('editCapacidad').required = false;
@@ -204,13 +178,11 @@ const ModuloCategorias = {
     }
     document.getElementById('editTarifa').value = c.tarifa;
   },
-
   guardarEdicion: function(e) {
     e.preventDefault();
     const catKey = document.getElementById('adminCatSelector').value;
     const c = DB.categorias[catKey];
     const isHourly = c.esPorHoras || (c.tarifa && c.tarifa.toLowerCase().includes('hora'));
-
     if (!isHourly) {
       const materias = Array.from(document.querySelectorAll('#materiasChecklist input[type="checkbox"]:checked')).map(chk => chk.value);
       if (materias.length === 0) return alert('Debe seleccionar al menos una materia para la categoría.');
@@ -219,19 +191,16 @@ const ModuloCategorias = {
       c.horario = document.getElementById('editHorario').value.trim();
       c.materias = materias;
     }
-
     c.tarifa = document.getElementById('editTarifa').value.trim();
     DB.guardar();
     ModuloCategorias.actualizarTarjetasVista();
     alert('Categoría actualizada exitosamente.');
   },
-
   crearNueva: function(e) {
     e.preventDefault();
     const newKey = "cat_" + Date.now();
     const tarifaRaw = document.getElementById('newCatTarifa').value.trim();
     const isHourly = tarifaRaw.toLowerCase().includes('hora');
-    
     DB.categorias[newKey] = {
       titulo: document.getElementById('newCatTitulo').value.trim(),
       cuposOcupados: 0,
@@ -242,7 +211,6 @@ const ModuloCategorias = {
       materias: isHourly ? [] : ["Matemáticas", "Castellano / Lengua", "Inglés", "Ciencias Naturales"],
       esPorHoras: isHourly
     };
-
     DB.guardar(); 
     ModuloCategorias.actualizarTarjetasVista();
     document.getElementById('adminCatSelector').value = newKey; 
@@ -253,56 +221,42 @@ const ModuloCategorias = {
   }
 };
 
-// ==========================================
-// 4. MÓDULO DE HORARIOS (SELECTOR GLOBAL)
-// ==========================================
 const ModuloHorarios = {
   targetInput: null,
-
   abrir: function(e) {
     this.targetInput = (e.currentTarget.id.includes('New') || e.currentTarget.id === 'newCatHorario') 
       ? document.getElementById('newCatHorario') 
       : document.getElementById('editHorario');
     UI.abrirModal('modalHorarioPicker');
   },
-
   aplicar: function() {
     const modal = document.getElementById('modalHorarioPicker');
     const checks = Array.from(modal.querySelectorAll('input[name="diaSemana"]:checked')).map(c => c.value);
     if (checks.length === 0) return alert('Seleccione al menos un día de clase.');
-    
     let diasTexto = (checks.length === 5 && checks.join(',') === 'Lun,Mar,Mié,Jue,Vie') ? 'Lun a Vie' :
                     (checks.length === 6 && checks.join(',') === 'Lun,Mar,Mié,Jue,Vie,Sáb') ? 'Lun a Sáb' : checks.join(', ');
-
     const h1 = document.getElementById('pickerHoraInicio').value;
     const h2 = document.getElementById('pickerHoraFin').value;
-    
     function format12h(t){ let [h,m]=t.split(':'); h=parseInt(h); let ampm=h>=12?'PM':'AM'; return `${h%12||12}:${m} ${ampm}`; }
-
     if(this.targetInput) this.targetInput.value = `${diasTexto}: ${format12h(h1)} - ${format12h(h2)}`;
     UI.cerrarModal('modalHorarioPicker');
   }
 };
 
-// ==========================================
-// 5. MÓDULO DE PROFESORES
-// ==========================================
 const ModuloProfesores = {
-  
   llenarSelects: function() {
     const selectEdit = document.getElementById('editProfesor');
     const selectNew = document.getElementById('newCatProfesor');
-    selectEdit.innerHTML = '';
+    if(selectEdit) selectEdit.innerHTML = '';
     if(selectNew) selectNew.innerHTML = '';
-
     DB.profesores.forEach(p => {
-      selectEdit.appendChild(new Option(`${p.nombre} (${p.correo})`, p.id));
+      if(selectEdit) selectEdit.appendChild(new Option(`${p.nombre} (${p.correo})`, p.id));
       if(selectNew) selectNew.appendChild(new Option(`${p.nombre} (${p.correo})`, p.id));
     });
   },
-
   renderizarLista: function() {
     const list = document.getElementById('profesoresList');
+    if(!list) return;
     list.innerHTML = '';
     DB.profesores.forEach((prof, idx) => {
       list.innerHTML += `<div class="p-2.5 bg-white border border-slate-200 rounded-lg flex items-center justify-between text-xs">
@@ -312,7 +266,6 @@ const ModuloProfesores = {
         <button type="button" onclick="window.deleteProfesor(${idx})" class="text-rose-600 font-bold ml-2">Eliminar</button></div>`;
     });
   },
-
   eliminar: function(index) {
     if (DB.profesores.length <= 1) return alert('Debe existir al menos un profesor registrado.');
     const profId = DB.profesores[index].id;
@@ -325,7 +278,6 @@ const ModuloProfesores = {
     this.renderizarLista(); 
     ModuloCategorias.actualizarTarjetasVista();
   },
-
   crear: function(e) {
     e.preventDefault();
     DB.profesores.push({
@@ -342,34 +294,25 @@ const ModuloProfesores = {
   }
 };
 
-// ==========================================
-// 6. MÓDULO DE MATRÍCULAS Y ACUDIENTES
-// ==========================================
 const ModuloMatriculas = {
   acudientes: [],
   tempDataHoras: null,
   selectCategoriaPrevia: "",
   hourlyRateForCalc: 0,
-
-  // Requisitos Lógica
   evaluarCambioCategoria: function() {
     const catKey = document.getElementById('categoriaSelect').value;
     const cat = DB.categorias[catKey];
     const preview = document.getElementById('tarifaPreview');
     const reqBox = document.getElementById('requisitosBox');
-    
     this.tempDataHoras = null;
-
     if (cat) {
       const isHourly = cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora'));
-      
       if (isHourly) {
         this.abrirConfigHoras(catKey);
       } else {
         preview.textContent = `Tarifa: ${cat.tarifa} fija`;
         this.selectCategoriaPrevia = catKey;
       }
-      
       if (isHourly) {
         reqBox.classList.add('opacity-50', 'pointer-events-none');
         document.getElementById('chkEntrevista').checked = false; 
@@ -392,7 +335,6 @@ const ModuloMatriculas = {
     }
     this.validarRequisitos();
   },
-
   validarRequisitos: function() {
     const catKey = document.getElementById('categoriaSelect').value;
     const cat = DB.categorias[catKey];
@@ -400,10 +342,8 @@ const ModuloMatriculas = {
     const chkEntrevista = document.getElementById('chkEntrevista');
     const chkExamen = document.getElementById('chkExamen');
     const listos = esExento || (chkEntrevista.checked && chkExamen.checked);
-    
     const btnSubmit = document.getElementById('btnSubmitMatricula');
     const badge = document.getElementById('requisitosBadge');
-
     if (listos && catKey) {
       btnSubmit.disabled = false;
       btnSubmit.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-pointer shadow transition-all";
@@ -418,16 +358,12 @@ const ModuloMatriculas = {
       badge.innerHTML = '<span class="text-slate-500 font-semibold">Requisitos: Pendientes</span>';
     }
   },
-
-  // Matrícula por horas Modal (Categoría 3)
   abrirConfigHoras: function(catKey) {
     const cat = DB.categorias[catKey];
     this.hourlyRateForCalc = parseInt(cat.tarifa.replace(/\D/g, ''), 10) || 0;
-    
     const selectProf = document.getElementById('configCatHorasProfesor');
     selectProf.innerHTML = '<option value="">Seleccione profesor...</option>';
     DB.profesores.forEach(p => selectProf.appendChild(new Option(`${p.nombre} (${p.especialidad})`, p.id)));
-    
     const matContainer = document.getElementById('cfgMateriasList');
     matContainer.innerHTML = '';
     DB.catalogoMaterias.forEach(mat => {
@@ -435,17 +371,14 @@ const ModuloMatriculas = {
         <input type="checkbox" name="cfgMateriaCheck" value="${mat}" class="rounded text-blue-600"> <span>${mat}</span>
       </label>`;
     });
-
     this.recalcularPrecioHoras();
     UI.abrirModal('modalConfigCatPorHoras');
   },
-
   recalcularPrecioHoras: function() {
     const numDias = document.querySelectorAll('input[name="cfgDia"]:checked').length;
     const tInicio = document.getElementById('cfgHoraInicio').value;
     const tFin = document.getElementById('cfgHoraFin').value;
     let totalHoras = 0;
-
     if (tInicio && tFin && numDias > 0) {
       const [h1, m1] = tInicio.split(':').map(Number);
       const [h2, m2] = tFin.split(':').map(Number);
@@ -456,32 +389,24 @@ const ModuloMatriculas = {
     document.getElementById('cfgPrecioCalculado').textContent = `$${new Intl.NumberFormat('es-CO').format(totalDinero)} / Total`;
     return { totalHoras, totalDinero };
   },
-
   guardarConfigHoras: function(e) {
     e.preventDefault();
     const dias = Array.from(document.querySelectorAll('input[name="cfgDia"]:checked')).map(c => c.value);
     const materias = Array.from(document.querySelectorAll('input[name="cfgMateriaCheck"]:checked')).map(c => c.value);
-    
     if (dias.length === 0) return alert('Seleccione al menos un día.');
     if (materias.length === 0) return alert('Seleccione al menos una materia.');
-    
     const resCalc = ModuloMatriculas.recalcularPrecioHoras();
     if(resCalc.totalHoras <= 0) return alert('El rango de horas es inválido.');
-
     ModuloMatriculas.tempDataHoras = {
       profesorId: document.getElementById('configCatHorasProfesor').value,
       totalCobro: resCalc.totalDinero
     };
-
     document.getElementById('tarifaPreview').textContent = `Tarifa Calculada: $${new Intl.NumberFormat('es-CO').format(resCalc.totalDinero)} (Jornada)`;
     ModuloMatriculas.selectCategoriaPrevia = document.getElementById('categoriaSelect').value;
-    
     UI.cerrarModal('modalConfigCatPorHoras');
     document.getElementById('formConfigCatHoras').reset();
     ModuloMatriculas.validarRequisitos();
   },
-
-  // Acudientes
   agregarAcudiente: function(e) {
     e.preventDefault();
     this.acudientes.push({
@@ -495,12 +420,10 @@ const ModuloMatriculas = {
     UI.cerrarModal('modalAcudiente');
     document.getElementById('acudienteForm').reset();
   },
-
   eliminarAcudiente: function(i) {
     this.acudientes.splice(i, 1);
     this.renderTablaAcudientes();
   },
-
   renderTablaAcudientes: function() {
     const tBody = document.getElementById('acudientesTableBody');
     tBody.innerHTML = '';
@@ -521,35 +444,26 @@ const ModuloMatriculas = {
     btnOpen.classList.toggle('opacity-50', this.acudientes.length >= 2);
     btnOpen.classList.toggle('cursor-not-allowed', this.acudientes.length >= 2);
   },
-
-  // Envío final
   oficializarMatricula: function(e) {
     e.preventDefault();
     if (ModuloMatriculas.acudientes.length === 0) return alert('Debe registrar al menos un acudiente para formalizar la matrícula.');
-
     const selectedCatKey = document.getElementById('categoriaSelect').value;
     const cat = DB.categorias[selectedCatKey];
     if (!cat) return alert('Seleccione una categoría válida.');
-
     const isHourly = cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora'));
-
     if (!isHourly) {
       if (cat.cuposOcupados >= cat.cuposTotal) return alert('No hay cupos disponibles en esta categoría.');
       cat.cuposOcupados += 1;
     }
-
     DB.guardar(); 
     ModuloCategorias.actualizarTarjetasVista();
-    
     const nombreEst = document.getElementById('nombres').value; 
     const apellidoEst = document.getElementById('apellidos').value;
-    
     if(isHourly && ModuloMatriculas.tempDataHoras) {
         alert(`¡Matrícula por horas formalizada exitosamente para ${nombreEst} ${apellidoEst}!\nProfesor: ${DB.getProfesorName(ModuloMatriculas.tempDataHoras.profesorId)}\nTotal: $${new Intl.NumberFormat('es-CO').format(ModuloMatriculas.tempDataHoras.totalCobro)}`);
     } else {
         alert(`¡Matrícula formalizada exitosamente para ${nombreEst} ${apellidoEst}! Se ha asignado y actualizado el cupo en ${cat.titulo}.`);
     }
-
     e.target.reset();
     ModuloMatriculas.acudientes = []; 
     ModuloMatriculas.tempDataHoras = null; 
@@ -560,89 +474,72 @@ const ModuloMatriculas = {
   }
 };
 
-
-// ==========================================
-// 7. INICIALIZADOR GLOBAL (App Engine)
-// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
   DB.validarSesion();
-  
-  // Exponer funciones globales necesarias para onclick inline (Eliminar botones de tablas)
   window.deleteProfesor = (idx) => ModuloProfesores.eliminar(idx);
   window.deleteAcudiente = (idx) => ModuloMatriculas.eliminarAcudiente(idx);
 
-  // Inicializar interfaz visual
   ModuloCategorias.actualizarTarjetasVista();
 
-  // ----- Eventos de Formateo -----
-  document.getElementById('editTarifa').addEventListener('blur', ModuloCategorias.autoFormatTarifa);
-  document.getElementById('newCatTarifa').addEventListener('blur', ModuloCategorias.autoFormatTarifa);
+  if(document.getElementById('editTarifa')) document.getElementById('editTarifa').addEventListener('blur', ModuloCategorias.autoFormatTarifa);
+  if(document.getElementById('newCatTarifa')) document.getElementById('newCatTarifa').addEventListener('blur', ModuloCategorias.autoFormatTarifa);
 
-  // ----- Eventos del Drawer Administrativo -----
-  document.getElementById('btnToggleAdminDrawer').addEventListener('click', (e) => { e.preventDefault(); UI.toggleDrawer(true); });
-  document.getElementById('btnCloseAdminDrawer').addEventListener('click', () => UI.toggleDrawer(false));
-  document.getElementById('adminDrawerOverlay').addEventListener('click', () => UI.toggleDrawer(false));
+  if(document.getElementById('btnToggleAdminDrawer')) document.getElementById('btnToggleAdminDrawer').addEventListener('click', (e) => { e.preventDefault(); UI.toggleDrawer(true); });
+  if(document.getElementById('btnCloseAdminDrawer')) document.getElementById('btnCloseAdminDrawer').addEventListener('click', () => UI.toggleDrawer(false));
+  if(document.getElementById('adminDrawerOverlay')) document.getElementById('adminDrawerOverlay').addEventListener('click', () => UI.toggleDrawer(false));
 
-  // ----- Eventos Tabs Administrativos -----
-  document.getElementById('tabBtnCategorias').addEventListener('click', (e) => {
+  if(document.getElementById('tabBtnCategorias')) document.getElementById('tabBtnCategorias').addEventListener('click', (e) => {
     e.target.className = "flex-1 py-3 border-b-2 border-blue-900 text-blue-900 bg-white";
     document.getElementById('tabBtnProfesores').className = "flex-1 py-3 border-b-2 border-transparent hover:text-slate-900";
     document.getElementById('tabContentCategorias').classList.remove('hidden');
     document.getElementById('tabContentProfesores').classList.add('hidden');
   });
-
-  document.getElementById('tabBtnProfesores').addEventListener('click', (e) => {
+  if(document.getElementById('tabBtnProfesores')) document.getElementById('tabBtnProfesores').addEventListener('click', (e) => {
     e.target.className = "flex-1 py-3 border-b-2 border-blue-900 text-blue-900 bg-white";
     document.getElementById('tabBtnCategorias').className = "flex-1 py-3 border-b-2 border-transparent hover:text-slate-900";
     document.getElementById('tabContentProfesores').classList.remove('hidden');
     document.getElementById('tabContentCategorias').classList.add('hidden');
   });
 
-  // ----- Eventos Edición Categorías -----
-  document.getElementById('adminCatSelector').addEventListener('change', (e) => ModuloCategorias.cargarFormulario(e.target.value));
-  document.getElementById('formEditCategoria').addEventListener('submit', ModuloCategorias.guardarEdicion);
+  if(document.getElementById('adminCatSelector')) document.getElementById('adminCatSelector').addEventListener('change', (e) => ModuloCategorias.cargarFormulario(e.target.value));
+  if(document.getElementById('formEditCategoria')) document.getElementById('formEditCategoria').addEventListener('submit', ModuloCategorias.guardarEdicion);
 
-  // ----- Eventos Creación Categorías -----
-  document.getElementById('btnNuevaCategoriaModal').addEventListener('click', () => {
+  if(document.getElementById('btnNuevaCategoriaModal')) document.getElementById('btnNuevaCategoriaModal').addEventListener('click', () => {
     ModuloProfesores.llenarSelects();
     UI.abrirModal('modalNuevaCategoria');
   });
-  document.getElementById('btnCloseNuevaCatModal').addEventListener('click', () => UI.cerrarModal('modalNuevaCategoria'));
-  document.getElementById('btnCancelNuevaCatModal').addEventListener('click', () => UI.cerrarModal('modalNuevaCategoria'));
-  document.getElementById('formNuevaCategoria').addEventListener('submit', ModuloCategorias.crearNueva);
+  if(document.getElementById('btnCloseNuevaCatModal')) document.getElementById('btnCloseNuevaCatModal').addEventListener('click', () => UI.cerrarModal('modalNuevaCategoria'));
+  if(document.getElementById('btnCancelNuevaCatModal')) document.getElementById('btnCancelNuevaCatModal').addEventListener('click', () => UI.cerrarModal('modalNuevaCategoria'));
+  if(document.getElementById('formNuevaCategoria')) document.getElementById('formNuevaCategoria').addEventListener('submit', ModuloCategorias.crearNueva);
 
-  // ----- Eventos Creación de Profesores -----
-  document.getElementById('formNewProfesor').addEventListener('submit', ModuloProfesores.crear);
+  if(document.getElementById('formNewProfesor')) document.getElementById('formNewProfesor').addEventListener('submit', ModuloProfesores.crear);
 
-  // ----- Eventos Horario General -----
   const inputsHorario = ['btnAbrirPickerHorario', 'editHorario', 'btnAbrirPickerHorarioNew', 'newCatHorario'];
   inputsHorario.forEach(id => {
-    document.getElementById(id).addEventListener('click', (e) => ModuloHorarios.abrir(e));
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('click', (e) => ModuloHorarios.abrir(e));
   });
-  document.getElementById('btnCloseHorarioPicker').addEventListener('click', () => UI.cerrarModal('modalHorarioPicker'));
-  document.getElementById('btnAceptarHorario').addEventListener('click', () => ModuloHorarios.aplicar());
+  if(document.getElementById('btnCloseHorarioPicker')) document.getElementById('btnCloseHorarioPicker').addEventListener('click', () => UI.cerrarModal('modalHorarioPicker'));
+  if(document.getElementById('btnAceptarHorario')) document.getElementById('btnAceptarHorario').addEventListener('click', () => ModuloHorarios.aplicar());
 
-  // ----- Eventos Matrícula Central -----
-  document.getElementById('categoriaSelect').addEventListener('change', () => ModuloMatriculas.evaluarCambioCategoria());
-  document.getElementById('chkEntrevista').addEventListener('change', () => ModuloMatriculas.validarRequisitos());
-  document.getElementById('chkExamen').addEventListener('change', () => ModuloMatriculas.validarRequisitos());
-  document.getElementById('matriculaForm').addEventListener('submit', ModuloMatriculas.oficializarMatricula);
+  if(document.getElementById('categoriaSelect')) document.getElementById('categoriaSelect').addEventListener('change', () => ModuloMatriculas.evaluarCambioCategoria());
+  if(document.getElementById('chkEntrevista')) document.getElementById('chkEntrevista').addEventListener('change', () => ModuloMatriculas.validarRequisitos());
+  if(document.getElementById('chkExamen')) document.getElementById('chkExamen').addEventListener('change', () => ModuloMatriculas.validarRequisitos());
+  if(document.getElementById('matriculaForm')) document.getElementById('matriculaForm').addEventListener('submit', ModuloMatriculas.oficializarMatricula);
 
-  // ----- Eventos Configuración por Horas -----
-  document.getElementById('btnCloseCatHorasModal').addEventListener('click', () => {
+  if(document.getElementById('btnCloseCatHorasModal')) document.getElementById('btnCloseCatHorasModal').addEventListener('click', () => {
     UI.cerrarModal('modalConfigCatPorHoras');
     document.getElementById('categoriaSelect').value = ModuloMatriculas.selectCategoriaPrevia;
     document.getElementById('categoriaSelect').dispatchEvent(new Event('change'));
   });
   document.querySelectorAll('.calcular-horas').forEach(el => el.addEventListener('change', ModuloMatriculas.recalcularPrecioHoras));
-  document.getElementById('formConfigCatHoras').addEventListener('submit', ModuloMatriculas.guardarConfigHoras);
+  if(document.getElementById('formConfigCatHoras')) document.getElementById('formConfigCatHoras').addEventListener('submit', ModuloMatriculas.guardarConfigHoras);
 
-  // ----- Eventos Acudientes -----
-  document.getElementById('btnOpenModal').addEventListener('click', () => {
+  if(document.getElementById('btnOpenModal')) document.getElementById('btnOpenModal').addEventListener('click', () => {
     if (ModuloMatriculas.acudientes.length >= 2) return alert('Máximo 2 acudientes permitidos.');
     UI.abrirModal('modalAcudiente');
   });
-  document.getElementById('btnCloseModal').addEventListener('click', () => UI.cerrarModal('modalAcudiente'));
-  document.getElementById('btnCancelModal').addEventListener('click', () => UI.cerrarModal('modalAcudiente'));
-  document.getElementById('acudienteForm').addEventListener('submit', (e) => ModuloMatriculas.agregarAcudiente(e));
+  if(document.getElementById('btnCloseModal')) document.getElementById('btnCloseModal').addEventListener('click', () => UI.cerrarModal('modalAcudiente'));
+  if(document.getElementById('btnCancelModal')) document.getElementById('btnCancelModal').addEventListener('click', () => UI.cerrarModal('modalAcudiente'));
+  if(document.getElementById('acudienteForm')) document.getElementById('acudienteForm').addEventListener('submit', (e) => ModuloMatriculas.agregarAcudiente(e));
 });
