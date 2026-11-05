@@ -4,14 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CAE - Matrículas y Diagnóstico</title>
-  <!-- Tailwind CSS Estático para evitar bloqueos CSP -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-200 text-gray-800 min-h-screen">
+<body class="bg-slate-200 text-slate-800 min-h-screen">
 
-  <header class="bg-white border-b border-gray-300 px-6 py-3 shadow-sm sticky top-0 z-30">
+  <header class="bg-white border-b border-slate-300 px-6 py-3 shadow-sm sticky top-0 z-30">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
-      <button type="button" id="btnToggleAdminDrawer" aria-label="Ajustes Administrativos" class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200">
+      <button type="button" id="btnToggleAdminDrawer" class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
@@ -22,7 +21,7 @@
           <span class="font-bold block">Mora (> 5° día hábil)</span>
           2 estudiantes en estado En Mora. Reportes bloqueados.
         </div>
-        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-2 rounded-r text-xs text-yellow-800 shadow-sm">
+        <div class="bg-amber-50 border-l-4 border-amber-500 p-2 rounded-r text-xs text-amber-800 shadow-sm">
           <span class="font-bold block">Alerta de Inasistencias</span>
           Juan S. Pérez acumula 3 inasistencias seguidas. Requiere Plan.
         </div>
@@ -36,10 +35,10 @@
 
   <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
     
-    <section class="lg:col-span-7 bg-white p-6 rounded-xl shadow-md border border-gray-300">
-      <div class="border-b border-gray-200 pb-3">
-        <h2 class="text-xl font-bold text-gray-900">Formalizar Matrícula y Examen Diagnóstico</h2>
-        <p class="text-xs text-yellow-700 font-semibold bg-yellow-50 border border-yellow-200 rounded px-2.5 py-1 mt-2 inline-block">
+    <section class="lg:col-span-7 bg-white p-6 rounded-xl shadow-md border border-slate-300">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-slate-900">Formalizar Matrícula y Examen Diagnóstico</h2>
+        <p class="text-xs text-amber-700 font-semibold bg-amber-50 border border-amber-200 rounded px-2.5 py-1 mt-2 inline-block">
           Nota: Es obligatorio registrar la entrevista y aprobar el examen diagnóstico.
         </p>
       </div>
@@ -47,39 +46,40 @@
       <form id="matriculaForm" class="space-y-4 mt-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label for="nombres" class="block text-xs font-semibold text-gray-700 mb-1">Nombres del Estudiante</label>
-            <input type="text" id="nombres" required class="w-full text-xs p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-gray-50">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Nombres del Estudiante</label>
+            <input type="text" id="nombres" required class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-slate-50">
           </div>
           <div>
-            <label for="apellidos" class="block text-xs font-semibold text-gray-700 mb-1">Apellidos del Estudiante</label>
-            <input type="text" id="apellidos" required class="w-full text-xs p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-gray-50">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Apellidos del Estudiante</label>
+            <input type="text" id="apellidos" required class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-slate-50">
           </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label for="docIdentidad" class="block text-xs font-semibold text-gray-700 mb-1">Documento de Identidad</label>
-            <input type="text" id="docIdentidad" required class="w-full text-xs p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-gray-50">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Documento de Identidad</label>
+            <input type="text" id="docIdentidad" required class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-slate-50">
           </div>
           <div>
-            <label for="categoriaSelect" class="block text-xs font-semibold text-gray-700 mb-1">Categoría</label>
-            <select id="categoriaSelect" required class="w-full text-xs p-2.5 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500"></select>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Categoría</label>
+            <select id="categoriaSelect" required class="w-full text-xs p-2.5 border border-slate-300 rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500"></select>
           </div>
         </div>
 
-        <div class="border border-gray-300 rounded-lg p-3 bg-gray-50">
+        <div class="border border-slate-300 rounded-lg p-3 bg-slate-50">
           <div class="flex items-center justify-between mb-2">
             <div>
-              <span class="block text-xs font-bold text-gray-800">Acudientes / Personas Responsables</span>
-              <span class="text-[11px] text-gray-500">Máximo 2 acudientes por estudiante</span>
+              <label class="block text-xs font-bold text-slate-800">Acudientes / Personas Responsables</label>
+              <span class="text-[11px] text-slate-500">Máximo 2 acudientes por estudiante</span>
             </div>
             <button type="button" id="btnOpenModal" class="px-3 py-1.5 bg-[#0b1b36] hover:bg-blue-900 text-white text-xs font-bold rounded-md transition-colors shadow">
               + Nuevo Acudiente
             </button>
           </div>
+
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs bg-white rounded border border-gray-200">
-              <thead class="bg-gray-100 text-gray-600 border-b border-gray-200">
+            <table class="w-full text-left text-xs bg-white rounded border border-slate-200">
+              <thead class="bg-slate-100 text-slate-600 border-b border-slate-200">
                 <tr>
                   <th class="p-2 font-semibold">Relación</th>
                   <th class="p-2 font-semibold">Nombre</th>
@@ -91,69 +91,66 @@
               </thead>
               <tbody id="acudientesTableBody">
                 <tr id="emptyRow">
-                  <td colspan="6" class="p-3 text-center text-gray-400 italic">No hay acudientes registrados (mínimo 1).</td>
+                  <td colspan="6" class="p-3 text-center text-slate-400 italic">No hay acudientes registrados (mínimo 1).</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <div id="requisitosBox" class="border border-gray-300 rounded-lg p-3.5 bg-gray-50 space-y-3 transition-opacity duration-300">
-          <h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider">Requisitos Obligatorios de Admisión</h3>
+        <div id="requisitosBox" class="border border-slate-300 rounded-lg p-3.5 bg-slate-50 space-y-3 transition-opacity duration-300">
+          <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Requisitos Obligatorios de Admisión</h3>
+          
           <div class="space-y-2">
-            <div class="flex items-center">
-              <input type="checkbox" id="chkEntrevista" class="mr-2.5 h-4 w-4 rounded text-blue-600 border-gray-300">
-              <label for="chkEntrevista" class="text-xs text-gray-800 font-medium cursor-pointer">
-                1. ¿Asistió a entrevista? <span class="text-gray-500 ml-1 font-normal">(Con presencia del acudiente)</span>
-              </label>
-            </div>
-            <div class="flex items-center">
-              <input type="checkbox" id="chkExamen" class="mr-2.5 h-4 w-4 rounded text-blue-600 border-gray-300">
-              <label for="chkExamen" class="text-xs text-gray-800 font-medium cursor-pointer">
-                2. ¿Realizó el examen Diagnóstico? <span class="text-gray-500 ml-1 font-normal">(Criterio mínimo de evaluación)</span>
-              </label>
-            </div>
+            <label class="flex items-center text-xs text-slate-800 font-medium cursor-pointer">
+              <input type="checkbox" id="chkEntrevista" class="mr-2.5 h-4 w-4 rounded text-blue-600 border-slate-300">
+              1. ¿Asistió a entrevista? <span class="text-slate-500 ml-1 font-normal">(Con presencia del acudiente)</span>
+            </label>
+            <label class="flex items-center text-xs text-slate-800 font-medium cursor-pointer">
+              <input type="checkbox" id="chkExamen" class="mr-2.5 h-4 w-4 rounded text-blue-600 border-slate-300">
+              2. ¿Realizó el examen Diagnóstico? <span class="text-slate-500 ml-1 font-normal">(Criterio mínimo de evaluación)</span>
+            </label>
           </div>
+
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
             <div>
-              <label for="puntajeInput" class="block text-[11px] font-semibold text-gray-600 mb-1">Puntaje / Resultado</label>
-              <input type="text" id="puntajeInput" class="w-full text-xs p-2 border border-gray-300 rounded bg-white text-gray-700">
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Puntaje / Resultado</label>
+              <input type="text" id="puntajeInput" class="w-full text-xs p-2 border border-slate-300 rounded bg-white text-slate-700">
             </div>
             <div>
-              <label for="indicadoresInput" class="block text-[11px] font-semibold text-gray-600 mb-1">Indicadores Iniciales</label>
-              <input type="text" id="indicadoresInput" class="w-full text-xs p-2 border border-gray-300 rounded bg-white text-gray-700">
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Indicadores Iniciales</label>
+              <input type="text" id="indicadoresInput" class="w-full text-xs p-2 border border-slate-300 rounded bg-white text-slate-700">
             </div>
           </div>
         </div>
 
-        <div class="p-3 bg-gray-100 rounded-lg border border-gray-300 flex items-center justify-between text-xs">
-          <span id="requisitosBadge" class="text-gray-500 font-semibold">Requisitos: Pendientes</span>
-          <span class="font-bold text-gray-700" id="tarifaPreview">Tarifa: Seleccione categoría</span>
+        <div class="p-3 bg-slate-100 rounded-lg border border-slate-300 flex items-center justify-between text-xs">
+          <span id="requisitosBadge" class="text-slate-500 font-semibold">Requisitos: Pendientes</span>
+          <span class="font-bold text-slate-700" id="tarifaPreview">Tarifa: Seleccione categoría</span>
         </div>
 
-        <button type="submit" id="btnSubmitMatricula" disabled class="w-full bg-gray-300 text-gray-500 font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-not-allowed transition-all">
+        <button type="submit" id="btnSubmitMatricula" disabled class="w-full bg-slate-300 text-slate-500 font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-not-allowed transition-all">
           Oficializar Matrícula (Requisitos Incompletos)
         </button>
       </form>
     </section>
 
     <aside class="lg:col-span-5 space-y-4">
-      <h2 class="text-base font-bold text-gray-900">Estado de Cupos y Planes de Estudio</h2>
+      <h2 class="text-base font-bold text-slate-900">Estado de Cupos y Planes de Estudio</h2>
       <div id="cardsCategoriasContainer" class="space-y-4"></div>
     </aside>
   </main>
 
-  <!-- Modales y Ajustes -->
-  <div id="modalAcudiente" class="fixed inset-0 bg-gray-900 bg-opacity-60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-xl shadow-2xl border border-gray-300 max-w-md w-full p-6">
+  <div id="modalAcudiente" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl shadow-2xl border border-slate-300 max-w-md w-full p-6">
       <div class="flex justify-between items-center border-b pb-3 mb-4">
-        <h3 class="font-bold text-gray-900 text-sm">Registrar Acudiente / Encargado</h3>
-        <button type="button" id="btnCloseModal" class="text-gray-400 hover:text-gray-700 text-lg font-bold">&times;</button>
+        <h3 class="font-bold text-slate-900 text-sm">Registrar Acudiente / Encargado</h3>
+        <button type="button" id="btnCloseModal" class="text-slate-400 hover:text-slate-700 text-lg font-bold">&times;</button>
       </div>
       <form id="acudienteForm" class="space-y-3">
         <div>
-          <label for="modalRelacion" class="block text-xs font-semibold text-gray-700 mb-1">Relación con el estudiante</label>
-          <select id="modalRelacion" required class="w-full text-xs p-2 border border-gray-300 rounded">
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Relación con el estudiante</label>
+          <select id="modalRelacion" required class="w-full text-xs p-2 border border-slate-300 rounded">
             <option value="">Seleccione relación...</option>
             <option value="Madre">Madre</option>
             <option value="Padre">Padre</option>
@@ -163,261 +160,237 @@
           </select>
         </div>
         <div>
-          <label for="modalNombre" class="block text-xs font-semibold text-gray-700 mb-1">Nombre Completo</label>
-          <input type="text" id="modalNombre" required class="w-full text-xs p-2 border border-gray-300 rounded" placeholder="Ej. Ana Pérez">
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre Completo</label>
+          <input type="text" id="modalNombre" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="Ej. Ana Pérez">
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label for="modalTel" class="block text-xs font-semibold text-gray-700 mb-1">Teléfono</label>
-            <input type="tel" id="modalTel" required class="w-full text-xs p-2 border border-gray-300 rounded" placeholder="Ej. 3001234567">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Teléfono</label>
+            <input type="tel" id="modalTel" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="Ej. 3001234567">
           </div>
           <div>
-            <label for="modalCorreo" class="block text-xs font-semibold text-gray-700 mb-1">Correo Electrónico</label>
-            <input type="email" id="modalCorreo" required class="w-full text-xs p-2 border border-gray-300 rounded" placeholder="correo@ejemplo.com">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Correo Electrónico</label>
+            <input type="email" id="modalCorreo" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="correo@ejemplo.com">
           </div>
         </div>
         <div>
-          <label for="modalDireccion" class="block text-xs font-semibold text-gray-700 mb-1">Dirección de Residencia</label>
-          <input type="text" id="modalDireccion" required class="w-full text-xs p-2 border border-gray-300 rounded" placeholder="Ej. Calle 12 # 34-56">
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Dirección de Residencia</label>
+          <input type="text" id="modalDireccion" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="Ej. Calle 12 # 34-56">
         </div>
         <div class="flex justify-end gap-2 pt-3 border-t mt-4">
-          <button type="button" id="btnCancelModal" class="px-3 py-1.5 border border-gray-300 text-gray-700 text-xs font-medium rounded hover:bg-gray-100">Cancelar</button>
+          <button type="button" id="btnCancelModal" class="px-3 py-1.5 border border-slate-300 text-slate-700 text-xs font-medium rounded hover:bg-slate-100">Cancelar</button>
           <button type="submit" class="px-4 py-1.5 bg-[#0b1b36] hover:bg-blue-900 text-white text-xs font-bold rounded">Guardar Acudiente</button>
         </div>
       </form>
     </div>
   </div>
 
-  <div id="adminDrawer" class="fixed inset-y-0 left-0 w-full max-w-lg bg-white shadow-2xl border-r border-gray-300 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
-    <div class="p-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+  <div id="adminDrawer" class="fixed inset-y-0 left-0 w-full max-w-lg bg-white shadow-2xl border-r border-slate-300 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+    <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
       <div>
-        <h3 class="font-bold text-gray-900 text-base">Ajustes Administrativos</h3>
-        <p class="text-xs text-gray-500">Gestión de cupos, materias y profesores</p>
+        <h3 class="font-bold text-slate-900 text-base">Ajustes Administrativos</h3>
+        <p class="text-xs text-slate-500">Gestión de cupos, materias y profesores</p>
       </div>
-      <button type="button" id="btnCloseAdminDrawer" class="text-gray-400 hover:text-gray-700 text-2xl font-bold p-1">&times;</button>
+      <button type="button" id="btnCloseAdminDrawer" class="text-slate-400 hover:text-slate-700 text-2xl font-bold p-1">&times;</button>
     </div>
-    <div class="flex border-b border-gray-200 text-xs font-bold text-gray-600 bg-gray-100">
+    <div class="flex border-b border-slate-200 text-xs font-bold text-slate-600 bg-slate-100">
       <button type="button" id="tabBtnCategorias" class="flex-1 py-3 border-b-2 border-blue-900 text-blue-900 bg-white">Categorías y Cupos</button>
-      <button type="button" id="tabBtnProfesores" class="flex-1 py-3 border-b-2 border-transparent hover:text-gray-900">Gestión de Profesores</button>
+      <button type="button" id="tabBtnProfesores" class="flex-1 py-3 border-b-2 border-transparent hover:text-slate-900">Gestión de Profesores</button>
     </div>
     <div class="p-5 overflow-y-auto flex-1 space-y-5">
       <section id="tabContentCategorias" class="space-y-4">
         <div class="flex items-center justify-between">
-          <span class="text-xs font-bold text-gray-700 uppercase">Configurar Categorías</span>
-          <button type="button" id="btnNuevaCategoriaModal" class="px-2.5 py-1 bg-green-600 hover:bg-green-700 text-white font-bold text-xs rounded shadow">
+          <span class="text-xs font-bold text-slate-700 uppercase">Configurar Categorías</span>
+          <button type="button" id="btnNuevaCategoriaModal" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded transition-colors shadow">
             + Nueva Categoría
           </button>
         </div>
         <div>
-          <label for="adminCatSelector" class="block text-xs font-semibold text-gray-700 mb-1">Categoría a Modificar</label>
-          <select id="adminCatSelector" class="w-full text-xs p-2.5 border border-gray-300 rounded bg-white font-medium"></select>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Categoría a Modificar</label>
+          <select id="adminCatSelector" class="w-full text-xs p-2.5 border border-slate-300 rounded bg-white font-medium"></select>
         </div>
         <form id="formEditCategoria" class="space-y-3.5">
           <div id="adminCamposRegulares" class="space-y-3.5 transition-all">
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label for="editCapacidad" class="block text-xs font-semibold text-gray-700 mb-1">Capacidad Total de Cupos</label>
-                <input type="number" id="editCapacidad" min="1" max="100" class="w-full text-xs p-2 border border-gray-300 rounded bg-white">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Capacidad Total de Cupos</label>
+                <input type="number" id="editCapacidad" min="1" max="100" class="w-full text-xs p-2 border border-slate-300 rounded bg-white">
               </div>
               <div>
-                <label for="editProfesor" class="block text-xs font-semibold text-gray-700 mb-1">Profesor Asignado</label>
-                <select id="editProfesor" class="w-full text-xs p-2 border border-gray-300 rounded bg-white font-medium"></select>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Profesor Asignado</label>
+                <select id="editProfesor" class="w-full text-xs p-2 border border-slate-300 rounded bg-white font-medium"></select>
               </div>
             </div>
             <div>
-              <label for="editHorario" class="block text-xs font-semibold text-gray-700 mb-1">Horario de Clases</label>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Horario de Clases</label>
               <div class="flex gap-2">
-                <input type="text" id="editHorario" readonly class="w-full text-xs p-2 border border-gray-300 rounded bg-gray-50 text-gray-700 cursor-pointer">
-                <button type="button" id="btnAbrirPickerHorario" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-xs font-bold rounded">Definir</button>
+                <input type="text" id="editHorario" readonly class="w-full text-xs p-2 border border-slate-300 rounded bg-slate-50 text-slate-700 cursor-pointer">
+                <button type="button" id="btnAbrirPickerHorario" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-xs font-bold rounded">Definir</button>
               </div>
             </div>
             <div>
               <div class="flex justify-between items-center mb-1">
-                <span class="block text-xs font-semibold text-gray-700">Materias Asignadas</span>
-                <span class="text-[10px] text-gray-500 font-medium" id="countMateriasSeleccionadas">0 materias</span>
+                <label class="block text-xs font-semibold text-slate-700">Materias Asignadas</label>
+                <span class="text-[10px] text-slate-500 font-medium" id="countMateriasSeleccionadas">0 materias</span>
               </div>
-              <div id="materiasChecklist" class="max-h-44 overflow-y-auto p-2.5 border border-gray-300 rounded-lg bg-gray-50 grid grid-cols-2 gap-1.5 text-xs"></div>
+              <div id="materiasChecklist" class="max-h-44 overflow-y-auto p-2.5 border border-slate-300 rounded-lg bg-slate-50 grid grid-cols-2 gap-1.5 text-xs"></div>
             </div>
           </div>
           <div>
-            <label for="editTarifa" class="block text-xs font-semibold text-gray-700 mb-1">Tarifa / Costo de la Categoría</label>
-            <input type="text" id="editTarifa" required class="w-full text-xs p-2 border border-gray-300 rounded">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tarifa / Costo de la Categoría</label>
+            <input type="text" id="editTarifa" required class="w-full text-xs p-2 border border-slate-300 rounded">
           </div>
-          <button type="submit" class="w-full py-2 bg-green-600 hover:bg-green-700 text-white font-bold text-xs rounded transition-colors shadow">
+          <button type="submit" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded transition-colors shadow">
             Guardar Cambios
           </button>
         </form>
       </section>
 
       <section id="tabContentProfesores" class="space-y-4 hidden">
-        <div class="bg-gray-50 p-3 rounded-lg border border-gray-300">
-          <h4 class="text-xs font-bold text-gray-900 uppercase mb-2">Registrar Nuevo Profesor</h4>
+        <div class="bg-slate-50 p-3 rounded-lg border border-slate-300">
+          <h4 class="text-xs font-bold text-slate-900 uppercase mb-2">Registrar Nuevo Profesor</h4>
           <form id="formNewProfesor" class="space-y-2.5">
             <div>
-              <label for="profNombre" class="block text-[11px] font-semibold text-gray-700 mb-0.5">Nombre Completo</label>
-              <input type="text" id="profNombre" required class="w-full text-xs p-1.5 border border-gray-300 rounded">
+              <label class="block text-[11px] font-semibold text-slate-700 mb-0.5">Nombre Completo</label>
+              <input type="text" id="profNombre" required class="w-full text-xs p-1.5 border border-slate-300 rounded">
             </div>
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <label for="profTel" class="block text-[11px] font-semibold text-gray-700 mb-0.5">Teléfono</label>
-                <input type="tel" id="profTel" required class="w-full text-xs p-1.5 border border-gray-300 rounded">
+                <label class="block text-[11px] font-semibold text-slate-700 mb-0.5">Teléfono</label>
+                <input type="tel" id="profTel" required class="w-full text-xs p-1.5 border border-slate-300 rounded">
               </div>
               <div>
-                <label for="profCorreo" class="block text-[11px] font-semibold text-gray-700 mb-0.5">Correo (Login)</label>
-                <input type="email" id="profCorreo" required class="w-full text-xs p-1.5 border border-gray-300 rounded">
+                <label class="block text-[11px] font-semibold text-slate-700 mb-0.5">Correo (Login)</label>
+                <input type="email" id="profCorreo" required class="w-full text-xs p-1.5 border border-slate-300 rounded">
               </div>
             </div>
             <div>
-              <label for="profEspecialidad" class="block text-[11px] font-semibold text-gray-700 mb-0.5">Áreas o Materias</label>
-              <input type="text" id="profEspecialidad" required class="w-full text-xs p-1.5 border border-gray-300 rounded">
+              <label class="block text-[11px] font-semibold text-slate-700 mb-0.5">Áreas o Materias</label>
+              <input type="text" id="profEspecialidad" required class="w-full text-xs p-1.5 border border-slate-300 rounded">
             </div>
             <button type="submit" class="w-full py-1.5 bg-[#0b1b36] hover:bg-blue-900 text-white font-bold text-xs rounded shadow">Registrar Profesor</button>
           </form>
         </div>
         <div>
-          <h4 class="text-xs font-bold text-gray-800 mb-2">Docentes Activos</h4>
+          <h4 class="text-xs font-bold text-slate-800 mb-2">Docentes Activos</h4>
           <div id="profesoresList" class="space-y-2"></div>
         </div>
       </section>
     </div>
   </div>
 
-  <div id="modalNuevaCategoria" class="fixed inset-0 bg-gray-900 bg-opacity-60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-xl shadow-2xl border border-gray-300 max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
+  <div id="modalNuevaCategoria" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl shadow-2xl border border-slate-300 max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3 mb-4">
-        <h3 class="font-bold text-gray-900 text-sm">Crear Nueva Categoría</h3>
-        <button type="button" id="btnCloseNuevaCatModal" class="text-gray-400 hover:text-gray-700 text-lg font-bold">&times;</button>
+        <h3 class="font-bold text-slate-900 text-sm">Crear Nueva Categoría</h3>
+        <button type="button" id="btnCloseNuevaCatModal" class="text-slate-400 hover:text-slate-700 text-lg font-bold">&times;</button>
       </div>
       <form id="formNuevaCategoria" class="space-y-3">
         <div>
-          <label for="newCatTitulo" class="block text-xs font-semibold text-gray-700 mb-1">Nombre de la Categoría</label>
-          <input type="text" id="newCatTitulo" required class="w-full text-xs p-2 border border-gray-300 rounded">
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre de la Categoría</label>
+          <input type="text" id="newCatTitulo" required class="w-full text-xs p-2 border border-slate-300 rounded">
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label for="newCatCapacidad" class="block text-xs font-semibold text-gray-700 mb-1">Capacidad de Cupos</label>
-            <input type="number" id="newCatCapacidad" min="1" max="100" value="10" required class="w-full text-xs p-2 border border-gray-300 rounded">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Capacidad de Cupos</label>
+            <input type="number" id="newCatCapacidad" min="1" max="100" value="10" required class="w-full text-xs p-2 border border-slate-300 rounded">
           </div>
           <div>
-            <label for="newCatTarifa" class="block text-xs font-semibold text-gray-700 mb-1">Tarifa Sugerida</label>
-            <input type="text" id="newCatTarifa" required class="w-full text-xs p-2 border border-gray-300 rounded" placeholder="$130.000/mes o $30.000 / hora">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tarifa Sugerida</label>
+            <input type="text" id="newCatTarifa" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="$130.000/mes o $30.000 / hora">
           </div>
         </div>
         <div>
-          <label for="newCatProfesor" class="block text-xs font-semibold text-gray-700 mb-1">Profesor Asignado</label>
-          <select id="newCatProfesor" class="w-full text-xs p-2 border border-gray-300 rounded bg-white"></select>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Profesor Asignado</label>
+          <select id="newCatProfesor" class="w-full text-xs p-2 border border-slate-300 rounded bg-white"></select>
         </div>
         <div>
-          <label for="newCatHorario" class="block text-xs font-semibold text-gray-700 mb-1">Horario Inicial</label>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Horario Inicial</label>
           <div class="flex gap-2">
-            <input type="text" id="newCatHorario" readonly required class="w-full text-xs p-2 border border-gray-300 rounded bg-gray-50 text-gray-700 cursor-pointer">
-            <button type="button" id="btnAbrirPickerHorarioNew" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-xs font-bold rounded">Definir</button>
+            <input type="text" id="newCatHorario" readonly required class="w-full text-xs p-2 border border-slate-300 rounded bg-slate-50 text-slate-700 cursor-pointer">
+            <button type="button" id="btnAbrirPickerHorarioNew" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-xs font-bold rounded">Definir</button>
           </div>
         </div>
         <div class="flex justify-end gap-2 pt-3 border-t mt-4">
-          <button type="button" id="btnCancelNuevaCatModal" class="px-3 py-1.5 border border-gray-300 text-gray-700 text-xs font-medium rounded hover:bg-gray-100">Cancelar</button>
-          <button type="submit" class="px-4 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded">Crear Categoría</button>
+          <button type="button" id="btnCancelNuevaCatModal" class="px-3 py-1.5 border border-slate-300 text-slate-700 text-xs font-medium rounded hover:bg-slate-100">Cancelar</button>
+          <button type="submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded">Crear Categoría</button>
         </div>
       </form>
     </div>
   </div>
 
-  <div id="modalConfigCatPorHoras" class="fixed inset-0 bg-gray-900 bg-opacity-60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-xl shadow-2xl border border-gray-300 max-w-md w-full p-6">
+  <div id="modalConfigCatPorHoras" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl shadow-2xl border border-slate-300 max-w-md w-full p-6">
       <div class="flex justify-between items-center border-b pb-3 mb-4">
-        <h3 class="font-bold text-gray-900 text-sm">Personalizar Jornada (Cobro por Hora)</h3>
-        <button type="button" id="btnCloseCatHorasModal" class="text-gray-400 hover:text-gray-700 text-lg font-bold">&times;</button>
+        <h3 class="font-bold text-slate-900 text-sm">Personalizar Jornada (Cobro por Hora)</h3>
+        <button type="button" id="btnCloseCatHorasModal" class="text-slate-400 hover:text-slate-700 text-lg font-bold">&times;</button>
       </div>
       <form id="formConfigCatHoras" class="space-y-3.5">
         <div>
-          <label for="configCatHorasProfesor" class="block text-xs font-semibold text-gray-700 mb-1">Profesor a cargo</label>
-          <select id="configCatHorasProfesor" required class="w-full text-xs p-2 border border-gray-300 rounded bg-white font-medium"></select>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Profesor a cargo</label>
+          <select id="configCatHorasProfesor" required class="w-full text-xs p-2 border border-slate-300 rounded bg-white font-medium"></select>
         </div>
-        <div class="bg-gray-50 p-3 rounded border border-gray-200">
-          <span class="block text-[11px] font-semibold text-gray-700 mb-1.5">Días de la semana requeridos</span>
+        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+          <label class="block text-[11px] font-semibold text-slate-700 mb-1.5">Días de la semana requeridos</label>
           <div class="grid grid-cols-3 gap-1.5 text-xs mb-3">
-            <label class="flex items-center gap-1 p-1 bg-white border border-gray-300 rounded cursor-pointer">
-              <input type="checkbox" id="cfgDiaLun" name="cfgDia" value="Lun" class="calcular-horas"> Lun
-            </label>
-            <label class="flex items-center gap-1 p-1 bg-white border border-gray-300 rounded cursor-pointer">
-              <input type="checkbox" id="cfgDiaMar" name="cfgDia" value="Mar" class="calcular-horas"> Mar
-            </label>
-            <label class="flex items-center gap-1 p-1 bg-white border border-gray-300 rounded cursor-pointer">
-              <input type="checkbox" id="cfgDiaMie" name="cfgDia" value="Mié" class="calcular-horas"> Mié
-            </label>
-            <label class="flex items-center gap-1 p-1 bg-white border border-gray-300 rounded cursor-pointer">
-              <input type="checkbox" id="cfgDiaJue" name="cfgDia" value="Jue" class="calcular-horas"> Jue
-            </label>
-            <label class="flex items-center gap-1 p-1 bg-white border border-gray-300 rounded cursor-pointer">
-              <input type="checkbox" id="cfgDiaVie" name="cfgDia" value="Vie" class="calcular-horas"> Vie
-            </label>
-            <label class="flex items-center gap-1 p-1 bg-white border border-gray-300 rounded cursor-pointer">
-              <input type="checkbox" id="cfgDiaSab" name="cfgDia" value="Sáb" class="calcular-horas"> Sáb
-            </label>
+            <label class="flex items-center gap-1 p-1 bg-white border border-slate-300 rounded cursor-pointer"><input type="checkbox" name="cfgDia" value="Lun" class="calcular-horas"> Lun</label>
+            <label class="flex items-center gap-1 p-1 bg-white border border-slate-300 rounded cursor-pointer"><input type="checkbox" name="cfgDia" value="Mar" class="calcular-horas"> Mar</label>
+            <label class="flex items-center gap-1 p-1 bg-white border border-slate-300 rounded cursor-pointer"><input type="checkbox" name="cfgDia" value="Mié" class="calcular-horas"> Mié</label>
+            <label class="flex items-center gap-1 p-1 bg-white border border-slate-300 rounded cursor-pointer"><input type="checkbox" name="cfgDia" value="Jue" class="calcular-horas"> Jue</label>
+            <label class="flex items-center gap-1 p-1 bg-white border border-slate-300 rounded cursor-pointer"><input type="checkbox" name="cfgDia" value="Vie" class="calcular-horas"> Vie</label>
+            <label class="flex items-center gap-1 p-1 bg-white border border-slate-300 rounded cursor-pointer"><input type="checkbox" name="cfgDia" value="Sáb" class="calcular-horas"> Sáb</label>
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label for="cfgHoraInicio" class="block text-[11px] font-semibold text-gray-700 mb-1">Hora Inicio</label>
-              <input type="time" id="cfgHoraInicio" required value="14:00" class="calcular-horas w-full text-xs p-2 border border-gray-300 rounded">
+              <label class="block text-[11px] font-semibold text-slate-700 mb-1">Hora Inicio</label>
+              <input type="time" id="cfgHoraInicio" required value="14:00" class="calcular-horas w-full text-xs p-2 border border-slate-300 rounded">
             </div>
             <div>
-              <label for="cfgHoraFin" class="block text-[11px] font-semibold text-gray-700 mb-1">Hora Fin</label>
-              <input type="time" id="cfgHoraFin" required value="16:00" class="calcular-horas w-full text-xs p-2 border border-gray-300 rounded">
+              <label class="block text-[11px] font-semibold text-slate-700 mb-1">Hora Fin</label>
+              <input type="time" id="cfgHoraFin" required value="16:00" class="calcular-horas w-full text-xs p-2 border border-slate-300 rounded">
             </div>
           </div>
         </div>
         <div>
-          <span class="block text-xs font-semibold text-gray-700 mb-1">Materias a trabajar</span>
-          <div id="cfgMateriasList" class="max-h-24 overflow-y-auto p-2 border border-gray-300 rounded bg-gray-50 grid grid-cols-2 gap-1 text-[11px]"></div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Materias a trabajar</label>
+          <div id="cfgMateriasList" class="max-h-24 overflow-y-auto p-2 border border-slate-300 rounded bg-slate-50 grid grid-cols-2 gap-1 text-[11px]"></div>
         </div>
         <div class="flex items-center justify-between bg-blue-50 border border-blue-200 p-3 rounded">
           <span class="text-xs font-bold text-blue-900">Total Calculado:</span>
           <span id="cfgPrecioCalculado" class="text-sm font-bold text-blue-700">$0 / Total</span>
         </div>
         <div class="flex justify-end gap-2 pt-2">
-          <button type="submit" class="w-full py-2 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded shadow transition-colors">Confirmar y Asignar a Matrícula</button>
+          <button type="submit" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded shadow transition-colors">Confirmar y Asignar a Matrícula</button>
         </div>
       </form>
     </div>
   </div>
 
-  <div id="modalHorarioPicker" class="fixed inset-0 bg-gray-900 bg-opacity-60 backdrop-blur-sm hidden items-center justify-center p-4 z-[60]">
-    <div class="bg-white rounded-xl shadow-2xl border border-gray-300 max-w-sm w-full p-5 space-y-4">
+  <div id="modalHorarioPicker" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-[60]">
+    <div class="bg-white rounded-xl shadow-2xl border border-slate-300 max-w-sm w-full p-5 space-y-4">
       <div class="flex justify-between items-center border-b pb-2">
-        <h4 class="font-bold text-gray-900 text-xs uppercase">Configurar Días y Horas</h4>
-        <button type="button" id="btnCloseHorarioPicker" class="text-gray-400 hover:text-gray-700 text-lg font-bold">&times;</button>
+        <h4 class="font-bold text-slate-900 text-xs uppercase">Configurar Días y Horas</h4>
+        <button type="button" id="btnCloseHorarioPicker" class="text-slate-400 hover:text-slate-700 text-lg font-bold">&times;</button>
       </div>
       <div>
-        <span class="block text-[11px] font-semibold text-gray-700 mb-1.5">Días de la semana</span>
+        <label class="block text-[11px] font-semibold text-slate-700 mb-1.5">Días de la semana</label>
         <div class="grid grid-cols-3 gap-1.5 text-xs">
-          <label class="flex items-center gap-1.5 p-1.5 bg-gray-50 border border-gray-200 rounded cursor-pointer">
-            <input type="checkbox" id="diaLun" name="diaSemana" value="Lun" checked> Lun
-          </label>
-          <label class="flex items-center gap-1.5 p-1.5 bg-gray-50 border border-gray-200 rounded cursor-pointer">
-            <input type="checkbox" id="diaMar" name="diaSemana" value="Mar" checked> Mar
-          </label>
-          <label class="flex items-center gap-1.5 p-1.5 bg-gray-50 border border-gray-200 rounded cursor-pointer">
-            <input type="checkbox" id="diaMie" name="diaSemana" value="Mié" checked> Mié
-          </label>
-          <label class="flex items-center gap-1.5 p-1.5 bg-gray-50 border border-gray-200 rounded cursor-pointer">
-            <input type="checkbox" id="diaJue" name="diaSemana" value="Jue" checked> Jue
-          </label>
-          <label class="flex items-center gap-1.5 p-1.5 bg-gray-50 border border-gray-200 rounded cursor-pointer">
-            <input type="checkbox" id="diaVie" name="diaSemana" value="Vie" checked> Vie
-          </label>
-          <label class="flex items-center gap-1.5 p-1.5 bg-gray-50 border border-gray-200 rounded cursor-pointer">
-            <input type="checkbox" id="diaSab" name="diaSemana" value="Sáb"> Sáb
-          </label>
+          <label class="flex items-center gap-1.5 p-1.5 bg-slate-50 border border-slate-200 rounded cursor-pointer"><input type="checkbox" name="diaSemana" value="Lun" checked> Lun</label>
+          <label class="flex items-center gap-1.5 p-1.5 bg-slate-50 border border-slate-200 rounded cursor-pointer"><input type="checkbox" name="diaSemana" value="Mar" checked> Mar</label>
+          <label class="flex items-center gap-1.5 p-1.5 bg-slate-50 border border-slate-200 rounded cursor-pointer"><input type="checkbox" name="diaSemana" value="Mié" checked> Mié</label>
+          <label class="flex items-center gap-1.5 p-1.5 bg-slate-50 border border-slate-200 rounded cursor-pointer"><input type="checkbox" name="diaSemana" value="Jue" checked> Jue</label>
+          <label class="flex items-center gap-1.5 p-1.5 bg-slate-50 border border-slate-200 rounded cursor-pointer"><input type="checkbox" name="diaSemana" value="Vie" checked> Vie</label>
+          <label class="flex items-center gap-1.5 p-1.5 bg-slate-50 border border-slate-200 rounded cursor-pointer"><input type="checkbox" name="diaSemana" value="Sáb"> Sáb</label>
         </div>
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label for="pickerHoraInicio" class="block text-[11px] font-semibold text-gray-700 mb-1">Hora Inicio</label>
-          <input type="time" id="pickerHoraInicio" value="15:00" class="w-full text-xs p-2 border border-gray-300 rounded">
+          <label class="block text-[11px] font-semibold text-slate-700 mb-1">Hora Inicio</label>
+          <input type="time" id="pickerHoraInicio" value="15:00" class="w-full text-xs p-2 border border-slate-300 rounded">
         </div>
         <div>
-          <label for="pickerHoraFin" class="block text-[11px] font-semibold text-gray-700 mb-1">Hora Fin</label>
-          <input type="time" id="pickerHoraFin" value="17:00" class="w-full text-xs p-2 border border-gray-300 rounded">
+          <label class="block text-[11px] font-semibold text-slate-700 mb-1">Hora Fin</label>
+          <input type="time" id="pickerHoraFin" value="17:00" class="w-full text-xs p-2 border border-slate-300 rounded">
         </div>
       </div>
       <div class="flex justify-end gap-2 pt-2 border-t">
@@ -428,7 +401,7 @@
     </div>
   </div>
 
-  <div id="adminDrawerOverlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden z-40"></div>
+  <div id="adminDrawerOverlay" class="fixed inset-0 bg-slate-900/50 hidden z-40"></div>
   <script src="js/admin-matriculas.js"></script>
 </body>
 </html>
