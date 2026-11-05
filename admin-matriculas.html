@@ -8,14 +8,7 @@
 </head>
 <body class="bg-slate-200 text-slate-800 min-h-screen">
 
-  <script>
-    const session = JSON.parse(localStorage.getItem('cae_session') || '{}');
-    if (session.role !== 'admin') {
-      alert('Acceso restringido a administradores.');
-      window.location.href = 'index.html';
-    }
-  </script>
-
+  <!-- Barra Superior con Botón Hamburguesa a la Izquierda -->
   <header class="bg-white border-b border-slate-300 px-6 py-3 shadow-sm sticky top-0 z-30">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
       <button type="button" id="btnToggleAdminDrawer" title="Ajustes Administrativos" class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600">
@@ -24,6 +17,7 @@
         </svg>
       </button>
 
+      <!-- Notificaciones -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3 flex-1 w-full">
         <div class="bg-red-50 border-l-4 border-red-500 p-2 rounded-r text-xs text-red-800 shadow-sm">
           <span class="font-bold block">Mora (> 5° día hábil)</span>
@@ -41,8 +35,10 @@
     </div>
   </header>
 
+  <!-- Contenedor Principal -->
   <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
     
+    <!-- Columna Izquierda: Formulario de Matrícula -->
     <section class="lg:col-span-7 bg-white p-6 rounded-xl shadow-md border border-slate-300">
       <div class="border-b border-slate-200 pb-3">
         <h2 class="text-xl font-bold text-slate-900">Formalizar Matrícula y Examen Diagnóstico</h2>
@@ -76,6 +72,7 @@
           </div>
         </div>
 
+        <!-- Acudientes -->
         <div class="border border-slate-300 rounded-lg p-3 bg-slate-50">
           <div class="flex items-center justify-between mb-2">
             <div>
@@ -108,6 +105,7 @@
           </div>
         </div>
 
+        <!-- Requisitos Obligatorios -->
         <div id="requisitosBox" class="border border-slate-300 rounded-lg p-3.5 bg-slate-50 space-y-3 transition-opacity duration-300">
           <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Requisitos Obligatorios de Admisión</h3>
           
@@ -145,14 +143,18 @@
       </form>
     </section>
 
+    <!-- Columna Derecha: Tarjetas de Cupos Dinámicas -->
     <aside class="lg:col-span-5 space-y-4">
       <h2 class="text-base font-bold text-slate-900">Estado de Cupos y Planes de Estudio</h2>
       <div id="cardsCategoriasContainer" class="space-y-4">
         <!-- Renderizado dinámicamente -->
       </div>
     </aside>
-
   </main>
+
+  <!-- ========================================== -->
+  <!-- ZONA DE MODALES (VENTANAS EMERGENTES)      -->
+  <!-- ========================================== -->
 
   <!-- Modal Acudiente -->
   <div id="modalAcudiente" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
@@ -161,7 +163,6 @@
         <h3 class="font-bold text-slate-900 text-sm">Registrar Acudiente / Encargado</h3>
         <button type="button" id="btnCloseModal" class="text-slate-400 hover:text-slate-700 text-lg font-bold">&times;</button>
       </div>
-
       <form id="acudienteForm" class="space-y-3">
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Relación con el estudiante</label>
@@ -219,14 +220,12 @@
       
       <!-- Pestaña 1: Categorías -->
       <section id="tabContentCategorias" class="space-y-4">
-        
         <div class="flex items-center justify-between">
           <span class="text-xs font-bold text-slate-700 uppercase">Configurar Categorías</span>
           <button type="button" id="btnNuevaCategoriaModal" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded transition-colors shadow">
             + Nueva Categoría
           </button>
         </div>
-
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Categoría a Modificar</label>
           <select id="adminCatSelector" class="w-full text-xs p-2.5 border border-slate-300 rounded bg-white font-medium">
@@ -235,7 +234,6 @@
         </div>
 
         <form id="formEditCategoria" class="space-y-3.5">
-          <!-- Este contenedor se ocultará si la categoría es por horas -->
           <div id="adminCamposRegulares" class="space-y-3.5 transition-all">
             <div class="grid grid-cols-2 gap-3">
               <div>
@@ -249,7 +247,6 @@
                 </select>
               </div>
             </div>
-
             <div>
               <label class="block text-xs font-semibold text-slate-700 mb-1">Horario de Clases</label>
               <div class="flex gap-2">
@@ -257,7 +254,6 @@
                 <button type="button" id="btnAbrirPickerHorario" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-xs font-bold rounded">Definir</button>
               </div>
             </div>
-
             <div>
               <div class="flex justify-between items-center mb-1">
                 <label class="block text-xs font-semibold text-slate-700">Materias Asignadas</label>
@@ -268,13 +264,10 @@
               </div>
             </div>
           </div>
-
-          <!-- Costo (Siempre visible) -->
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1">Tarifa / Costo de la Categoría</label>
             <input type="text" id="editTarifa" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="$120.000/mes">
           </div>
-
           <button type="submit" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded transition-colors shadow">
             Guardar Cambios
           </button>
@@ -309,7 +302,6 @@
             </button>
           </form>
         </div>
-
         <div>
           <h4 class="text-xs font-bold text-slate-800 mb-2">Docentes Activos</h4>
           <div id="profesoresList" class="space-y-2">
@@ -333,7 +325,6 @@
           <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre de la Categoría</label>
           <input type="text" id="newCatTitulo" required class="w-full text-xs p-2 border border-slate-300 rounded">
         </div>
-
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1">Capacidad de Cupos</label>
@@ -344,12 +335,10 @@
             <input type="text" id="newCatTarifa" required class="w-full text-xs p-2 border border-slate-300 rounded" placeholder="$130.000/mes o $30.000 / hora">
           </div>
         </div>
-
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Profesor Asignado</label>
           <select id="newCatProfesor" class="w-full text-xs p-2 border border-slate-300 rounded bg-white"></select>
         </div>
-
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Horario Inicial</label>
           <div class="flex gap-2">
@@ -357,7 +346,6 @@
             <button type="button" id="btnAbrirPickerHorarioNew" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-xs font-bold rounded">Definir</button>
           </div>
         </div>
-
         <div class="flex justify-end gap-2 pt-3 border-t mt-4">
           <button type="button" id="btnCancelNuevaCatModal" class="px-3 py-1.5 border border-slate-300 text-slate-700 text-xs font-medium rounded hover:bg-slate-100">Cancelar</button>
           <button type="submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded">Crear Categoría</button>
@@ -375,14 +363,11 @@
       </div>
 
       <form id="formConfigCatHoras" class="space-y-3.5">
-        
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Profesor a cargo</label>
           <select id="configCatHorasProfesor" required class="w-full text-xs p-2 border border-slate-300 rounded bg-white font-medium">
           </select>
         </div>
-
-        <!-- Selección de Días y Horas -->
         <div class="bg-slate-50 p-3 rounded border border-slate-200">
           <label class="block text-[11px] font-semibold text-slate-700 mb-1.5">Días de la semana requeridos</label>
           <div class="grid grid-cols-3 gap-1.5 text-xs mb-3">
@@ -393,7 +378,6 @@
             <label class="flex items-center gap-1 p-1 bg-white border border-slate-300 rounded cursor-pointer"><input type="checkbox" name="cfgDia" value="Vie" class="calcular-horas"> Vie</label>
             <label class="flex items-center gap-1 p-1 bg-white border border-slate-300 rounded cursor-pointer"><input type="checkbox" name="cfgDia" value="Sáb" class="calcular-horas"> Sáb</label>
           </div>
-
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-[11px] font-semibold text-slate-700 mb-1">Hora Inicio</label>
@@ -405,19 +389,16 @@
             </div>
           </div>
         </div>
-
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Materias a trabajar</label>
           <div id="cfgMateriasList" class="max-h-24 overflow-y-auto p-2 border border-slate-300 rounded bg-slate-50 grid grid-cols-2 gap-1 text-[11px]">
             <!-- Dinámico -->
           </div>
         </div>
-
         <div class="flex items-center justify-between bg-blue-50 border border-blue-200 p-3 rounded">
           <span class="text-xs font-bold text-blue-900">Total Calculado:</span>
           <span id="cfgPrecioCalculado" class="text-sm font-bold text-blue-700">$0 / Total</span>
         </div>
-
         <div class="flex justify-end gap-2 pt-2">
           <button type="submit" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded shadow transition-colors">Confirmar y Asignar a Matrícula</button>
         </div>
@@ -461,640 +442,6 @@
     </div>
   </div>
 
-  <div id="adminDrawerOverlay" class="fixed inset-0 bg-slate-900/50 hidden z-40"></div>
-
-  <!-- Lógica Integral -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      
-      const catalogoMaterias = [
-        "Matemáticas", "Geometría", "Álgebra", "Estadística",
-        "Castellano / Lengua", "Comprensión Lectora", "Inglés",
-        "Ciencias Naturales", "Biología", "Química", "Física",
-        "Ciencias Sociales", "Historia", "Geografía", "Filosofía",
-        "Ética y Valores", "Informática"
-      ];
-
-      const defaultProfesores = [
-        { id: "p1", nombre: "Profesor 1", tel: "3001234567", correo: "profe@cae.com", especialidad: "Primaria Integral" },
-        { id: "p2", nombre: "Profesor 2", tel: "3119876543", correo: "marta@cae.com", especialidad: "Matemáticas y Lenguaje" },
-        { id: "p3", nombre: "Profesor 3", tel: "3205554433", correo: "andres@cae.com", especialidad: "Bachillerato / Ciencias" }
-      ];
-
-      const defaultCategorias = {
-        cat1: {
-          titulo: "1ra Categoría (Transición a 3º Primaria)",
-          cuposOcupados: 8,
-          cuposTotal: 10,
-          profesorId: "p1",
-          horario: "Lun a Vie: 3:00 PM - 5:00 PM",
-          tarifa: "$120.000/mes",
-          materias: ["Matemáticas", "Ciencias Sociales", "Castellano / Lengua", "Inglés", "Ciencias Naturales"]
-        },
-        cat2: {
-          titulo: "2da Categoría (4º a 6º Grado)",
-          cuposOcupados: 10,
-          cuposTotal: 10,
-          profesorId: "p2",
-          horario: "Lun a Vie: 3:00 PM - 6:00 PM",
-          tarifa: "$120.000/mes",
-          materias: ["Matemáticas", "Geometría", "Ciencias Sociales", "Castellano / Lengua", "Inglés", "Ciencias Naturales"]
-        },
-        cat3: {
-          titulo: "3ra Categoría (7º a 11º Bachillerato)",
-          cuposOcupados: 0,
-          cuposTotal: 0,
-          esPorHoras: true,
-          profesorId: "p3",
-          horario: "Horario según asignación",
-          tarifa: "$30.000 / Hora",
-          materias: []
-        }
-      };
-
-      let profesores = JSON.parse(localStorage.getItem('cae_profesores')) || defaultProfesores;
-      let categorias = JSON.parse(localStorage.getItem('cae_categorias')) || defaultCategorias;
-      let currentMatriculaTempData = null; // Almacenará config temporal de cat3
-
-      function saveState() {
-        localStorage.setItem('cae_profesores', JSON.stringify(profesores));
-        localStorage.setItem('cae_categorias', JSON.stringify(categorias));
-      }
-
-      function getProfesorName(id) {
-        const p = profesores.find(item => item.id === id);
-        return p ? p.nombre : "Sin asignar";
-      }
-
-      // -----------------------------------------------------------------
-      // AUTOFORMATO DE MONEDA
-      // -----------------------------------------------------------------
-      function autoFormatTarifa(e) {
-        let input = e.target;
-        let rawVal = input.value.toLowerCase();
-        let numbers = rawVal.replace(/\D/g, '');
-        if (!numbers) return;
-        
-        let formatted = new Intl.NumberFormat('es-CO').format(parseInt(numbers, 10));
-        
-        let isHourlyCat = false;
-        if(input.id === 'editTarifa') {
-            const catKey = document.getElementById('adminCatSelector').value;
-            const cat = categorias[catKey];
-            isHourlyCat = cat && (cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora')));
-        }
-        
-        let suffix = (isHourlyCat || rawVal.includes('hora')) ? ' / Hora' : '/mes';
-        input.value = `$${formatted}${suffix}`;
-      }
-
-      document.getElementById('editTarifa').addEventListener('blur', autoFormatTarifa);
-      document.getElementById('newCatTarifa').addEventListener('blur', autoFormatTarifa);
-
-      // -----------------------------------------------------------------
-      // SINCRONIZACIÓN DE INTERFAZ Y TARJETAS
-      // -----------------------------------------------------------------
-      function updateCardsDisplay() {
-        const container = document.getElementById('cardsCategoriasContainer');
-        container.innerHTML = '';
-
-        Object.keys(categorias).forEach(key => {
-          const cat = categorias[key];
-          const isHourly = cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora'));
-          const isFull = !isHourly && cat.cuposOcupados >= cat.cuposTotal;
-          
-          let cupoBadge = '';
-          if (isHourly) {
-            cupoBadge = '<span class="text-xs bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded">Por Horas</span>';
-          } else if (isFull) {
-            cupoBadge = `<span class="text-xs bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded">${cat.cuposOcupados}/${cat.cuposTotal} (CUPO LLENO)</span>`;
-          } else {
-            cupoBadge = `<span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">${cat.cuposOcupados}/${cat.cuposTotal} Cupos</span>`;
-          }
-
-          const tags = cat.materias ? cat.materias.map(m => `<span class="px-2 py-0.5 bg-slate-100 border border-slate-200 text-[10px] rounded text-slate-600">${m}</span>`).join('') : '';
-          const pName = isHourly && !cat.profesorId ? 'Por asignación' : getProfesorName(cat.profesorId);
-
-          const card = document.createElement('div');
-          card.id = `card-${key}`;
-          card.className = "bg-white p-4 rounded-xl shadow-md border border-slate-300";
-          card.innerHTML = `
-            <div class="flex justify-between items-center mb-1">
-              <span class="font-bold text-xs text-slate-800">${cat.titulo}</span>
-              ${cupoBadge}
-            </div>
-            <p class="text-xs text-slate-500 mb-2">${pName} • ${cat.horario} • ${cat.tarifa}</p>
-            <div class="flex flex-wrap gap-1">${tags}</div>
-          `;
-          container.appendChild(card);
-        });
-        syncCategoriasSelects();
-      }
-
-      function syncCategoriasSelects() {
-        const selectMain = document.getElementById('categoriaSelect');
-        const selectAdmin = document.getElementById('adminCatSelector');
-        
-        const currentAdminVal = selectAdmin.value;
-        const currentMainVal = selectMain.value;
-
-        selectMain.innerHTML = '<option value="">Seleccione una categoría...</option>';
-        selectAdmin.innerHTML = '';
-
-        Object.keys(categorias).forEach(key => {
-          const cat = categorias[key];
-          const isHourly = cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora'));
-          const isFull = !isHourly && cat.cuposOcupados >= cat.cuposTotal;
-
-          const optMain = document.createElement('option');
-          optMain.value = key;
-          optMain.textContent = `${cat.titulo} ${isFull ? '- (Cupo Lleno)' : ''}`;
-          if (isFull) optMain.disabled = true;
-          selectMain.appendChild(optMain);
-
-          const optAdmin = document.createElement('option');
-          optAdmin.value = key;
-          optAdmin.textContent = cat.titulo;
-          selectAdmin.appendChild(optAdmin);
-        });
-
-        if (currentAdminVal && categorias[currentAdminVal]) { selectAdmin.value = currentAdminVal; }
-        if (currentMainVal && categorias[currentMainVal]) { selectMain.value = currentMainVal; }
-      }
-
-      // -----------------------------------------------------------------
-      // MATRÍCULA Y MODAL POR HORAS
-      // -----------------------------------------------------------------
-      const chkEntrevista = document.getElementById('chkEntrevista');
-      const chkExamen = document.getElementById('chkExamen');
-      const puntajeInput = document.getElementById('puntajeInput');
-      const indicadoresInput = document.getElementById('indicadoresInput');
-      const btnSubmit = document.getElementById('btnSubmitMatricula');
-      const badge = document.getElementById('requisitosBadge');
-      const requisitosBox = document.getElementById('requisitosBox');
-      let selectCategoriaPrevia = "";
-
-      document.getElementById('categoriaSelect').addEventListener('change', function(e) {
-        const catKey = this.value;
-        const cat = categorias[catKey];
-        const preview = document.getElementById('tarifaPreview');
-        currentMatriculaTempData = null; // resetear data temporal
-
-        if (cat) {
-          const isHourly = cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora'));
-          
-          if (isHourly) {
-            // Abrir Modal de configuración de horas y abortar cambio temporalmente si cancela
-            abrirConfigCatHoras(catKey);
-          } else {
-            preview.textContent = `Tarifa: ${cat.tarifa} fija`;
-            selectCategoriaPrevia = catKey;
-          }
-          
-          // Deshabilitar requisitos si es por horas
-          if (isHourly) {
-            requisitosBox.classList.add('opacity-50', 'pointer-events-none');
-            chkEntrevista.checked = false; chkExamen.checked = false;
-            chkEntrevista.disabled = true; chkExamen.disabled = true;
-            puntajeInput.value = ''; indicadoresInput.value = '';
-            puntajeInput.disabled = true; indicadoresInput.disabled = true;
-          } else {
-            requisitosBox.classList.remove('opacity-50', 'pointer-events-none');
-            chkEntrevista.disabled = false; chkExamen.disabled = false;
-            puntajeInput.disabled = false; indicadoresInput.disabled = false;
-          }
-        } else {
-          preview.textContent = 'Tarifa: Seleccione categoría';
-          requisitosBox.classList.remove('opacity-50', 'pointer-events-none');
-          selectCategoriaPrevia = "";
-        }
-        checkRequisitos();
-      });
-
-      // Lógica Modal Horas (Matrícula Cat. 3)
-      const modalCatHoras = document.getElementById('modalConfigCatPorHoras');
-      let hourlyRateForCalc = 0;
-
-      function abrirConfigCatHoras(catKey) {
-        const cat = categorias[catKey];
-        // Extraer numero de tarifa
-        hourlyRateForCalc = parseInt(cat.tarifa.replace(/\D/g, ''), 10) || 0;
-        
-        // Cargar profesores
-        const selectProf = document.getElementById('configCatHorasProfesor');
-        selectProf.innerHTML = '<option value="">Seleccione profesor...</option>';
-        profesores.forEach(p => {
-          selectProf.appendChild(new Option(`${p.nombre} (${p.especialidad})`, p.id));
-        });
-        
-        // Cargar Materias
-        const matContainer = document.getElementById('cfgMateriasList');
-        matContainer.innerHTML = '';
-        catalogoMaterias.forEach(mat => {
-          matContainer.innerHTML += `<label class="flex items-center gap-1 p-1 hover:bg-slate-200/60 rounded cursor-pointer text-slate-700">
-            <input type="checkbox" name="cfgMateriaCheck" value="${mat}" class="rounded text-blue-600"> <span>${mat}</span>
-          </label>`;
-        });
-
-        recalcularPrecioHoras();
-        modalCatHoras.classList.remove('hidden');
-        modalCatHoras.classList.add('flex');
-      }
-
-      function cerrarConfigCatHoras() {
-        modalCatHoras.classList.add('hidden');
-        modalCatHoras.classList.remove('flex');
-        document.getElementById('formConfigCatHoras').reset();
-      }
-
-      document.getElementById('btnCloseCatHorasModal').addEventListener('click', () => {
-        cerrarConfigCatHoras();
-        document.getElementById('categoriaSelect').value = selectCategoriaPrevia; // Revertir si cancela
-        document.getElementById('categoriaSelect').dispatchEvent(new Event('change'));
-      });
-
-      // Eventos para calcular en vivo
-      document.querySelectorAll('.calcular-horas').forEach(el => {
-        el.addEventListener('change', recalcularPrecioHoras);
-      });
-
-      function recalcularPrecioHoras() {
-        const numDias = document.querySelectorAll('input[name="cfgDia"]:checked').length;
-        const tInicio = document.getElementById('cfgHoraInicio').value;
-        const tFin = document.getElementById('cfgHoraFin').value;
-        let totalHoras = 0;
-
-        if (tInicio && tFin && numDias > 0) {
-          const [h1, m1] = tInicio.split(':').map(Number);
-          const [h2, m2] = tFin.split(':').map(Number);
-          let diff = (h2 + m2/60) - (h1 + m1/60);
-          if (diff > 0) {
-            totalHoras = diff * numDias;
-          }
-        }
-        const totalDinero = totalHoras * hourlyRateForCalc;
-        document.getElementById('cfgPrecioCalculado').textContent = `$${new Intl.NumberFormat('es-CO').format(totalDinero)} / Total`;
-        return { totalHoras, totalDinero };
-      }
-
-      document.getElementById('formConfigCatHoras').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const dias = Array.from(document.querySelectorAll('input[name="cfgDia"]:checked')).map(c => c.value);
-        const materias = Array.from(document.querySelectorAll('input[name="cfgMateriaCheck"]:checked')).map(c => c.value);
-        
-        if (dias.length === 0) return alert('Seleccione al menos un día.');
-        if (materias.length === 0) return alert('Seleccione al menos una materia.');
-        
-        const resCalc = recalcularPrecioHoras();
-        if(resCalc.totalHoras <= 0) return alert('El rango de horas es inválido.');
-
-        currentMatriculaTempData = {
-          profesorId: document.getElementById('configCatHorasProfesor').value,
-          dias: dias.join(', '),
-          horaInicio: document.getElementById('cfgHoraInicio').value,
-          horaFin: document.getElementById('cfgHoraFin').value,
-          materias: materias,
-          totalCobro: resCalc.totalDinero
-        };
-
-        const preview = document.getElementById('tarifaPreview');
-        preview.textContent = `Tarifa Calculada: $${new Intl.NumberFormat('es-CO').format(resCalc.totalDinero)} (Jornada)`;
-        
-        selectCategoriaPrevia = document.getElementById('categoriaSelect').value;
-        cerrarConfigCatHoras();
-        checkRequisitos();
-      });
-
-      function checkRequisitos() {
-        const catKey = document.getElementById('categoriaSelect').value;
-        const cat = categorias[catKey];
-        const esExento = catKey && cat && (cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora')));
-        const listos = esExento || (chkEntrevista.checked && chkExamen.checked);
-        
-        if (listos && catKey) {
-          btnSubmit.disabled = false;
-          btnSubmit.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-pointer shadow transition-all";
-          btnSubmit.innerText = "Oficializar Matrícula";
-          badge.innerHTML = esExento 
-            ? 'Requisitos: <span class="text-blue-600 font-bold">No Aplican (Exento)</span>' 
-            : 'Requisitos Verificados: <span class="text-emerald-600 font-bold">Estado Activa</span>';
-        } else {
-          btnSubmit.disabled = true;
-          btnSubmit.className = "w-full bg-slate-300 text-slate-500 font-bold py-3 rounded-lg text-xs uppercase tracking-wider cursor-not-allowed transition-all";
-          btnSubmit.innerText = "Oficializar Matrícula (Requisitos Incompletos)";
-          badge.innerHTML = '<span class="text-slate-500 font-semibold">Requisitos: Pendientes</span>';
-        }
-      }
-
-      chkEntrevista.addEventListener('change', checkRequisitos);
-      chkExamen.addEventListener('change', checkRequisitos);
-
-      // -----------------------------------------------------------------
-      // GESTIÓN DEL FORMULARIO DE EDICIÓN DE CATEGORÍAS EN PANEL ADMIN
-      // -----------------------------------------------------------------
-      const catSelector = document.getElementById('adminCatSelector');
-      const checklistContainer = document.getElementById('materiasChecklist');
-      const adminCamposRegulares = document.getElementById('adminCamposRegulares');
-
-      function renderMateriasChecklist(materiasSeleccionadas) {
-        checklistContainer.innerHTML = '';
-        catalogoMaterias.forEach(mat => {
-          const isChecked = materiasSeleccionadas.includes(mat);
-          checklistContainer.innerHTML += `
-            <label class="flex items-center gap-1.5 p-1 hover:bg-slate-200/60 rounded cursor-pointer text-slate-700">
-              <input type="checkbox" name="catMateriaCheck" value="${mat}" ${isChecked ? 'checked' : ''} class="rounded text-blue-600">
-              <span>${mat}</span>
-            </label>`;
-        });
-        updateMateriasCount();
-        checklistContainer.querySelectorAll('input[type="checkbox"]').forEach(chk => {
-          chk.addEventListener('change', updateMateriasCount);
-        });
-      }
-
-      function updateMateriasCount() {
-        const selected = checklistContainer.querySelectorAll('input[type="checkbox"]:checked');
-        document.getElementById('countMateriasSeleccionadas').textContent = `${selected.length} materias`;
-      }
-
-      function loadCategoriaToForm(catKey) {
-        const c = categorias[catKey];
-        if (!c) return;
-        
-        const isHourly = c.esPorHoras || (c.tarifa && c.tarifa.toLowerCase().includes('hora'));
-        
-        if (isHourly) {
-          adminCamposRegulares.classList.add('hidden');
-          // No requieren requerir estos campos si están ocultos
-          document.getElementById('editCapacidad').required = false;
-          document.getElementById('editHorario').required = false;
-        } else {
-          adminCamposRegulares.classList.remove('hidden');
-          document.getElementById('editCapacidad').required = true;
-          document.getElementById('editHorario').required = true;
-          document.getElementById('editCapacidad').value = c.cuposTotal;
-          document.getElementById('editProfesor').value = c.profesorId;
-          document.getElementById('editHorario').value = c.horario;
-          renderMateriasChecklist(c.materias || []);
-        }
-        document.getElementById('editTarifa').value = c.tarifa;
-      }
-
-      catSelector.addEventListener('change', (e) => loadCategoriaToForm(e.target.value));
-
-      document.getElementById('formEditCategoria').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const catKey = catSelector.value;
-        const c = categorias[catKey];
-        const isHourly = c.esPorHoras || (c.tarifa && c.tarifa.toLowerCase().includes('hora'));
-
-        if (!isHourly) {
-          const materias = Array.from(checklistContainer.querySelectorAll('input[type="checkbox"]:checked')).map(chk => chk.value);
-          if (materias.length === 0) return alert('Debe seleccionar al menos una materia para la categoría.');
-          c.cuposTotal = parseInt(document.getElementById('editCapacidad').value) || 0;
-          c.profesorId = document.getElementById('editProfesor').value;
-          c.horario = document.getElementById('editHorario').value.trim();
-          c.materias = materias;
-        }
-
-        c.tarifa = document.getElementById('editTarifa').value.trim();
-        saveState();
-        updateCardsDisplay();
-        alert('Categoría actualizada exitosamente.');
-      });
-
-      // -----------------------------------------------------------------
-      // SELECTOR INTERACTIVO DE HORARIOS (DÍAS Y HORAS) GENERAL
-      // -----------------------------------------------------------------
-      const modalHorarioGlobal = document.getElementById('modalHorarioPicker');
-      let targetHorarioInput = null;
-
-      function openHorarioPicker(e) {
-        targetHorarioInput = e.currentTarget.id.includes('New') || e.currentTarget.id === 'newCatHorario' 
-          ? document.getElementById('newCatHorario') 
-          : document.getElementById('editHorario');
-        modalHorarioGlobal.classList.remove('hidden');
-        modalHorarioGlobal.classList.add('flex');
-      }
-
-      document.getElementById('btnAbrirPickerHorario').addEventListener('click', openHorarioPicker);
-      document.getElementById('editHorario').addEventListener('click', openHorarioPicker);
-      document.getElementById('btnAbrirPickerHorarioNew').addEventListener('click', openHorarioPicker);
-      document.getElementById('newCatHorario').addEventListener('click', openHorarioPicker);
-      
-      document.getElementById('btnCloseHorarioPicker').addEventListener('click', () => {
-        modalHorarioGlobal.classList.add('hidden');
-        modalHorarioGlobal.classList.remove('flex');
-      });
-
-      document.getElementById('btnAceptarHorario').addEventListener('click', () => {
-        const checks = Array.from(modalHorarioGlobal.querySelectorAll('input[name="diaSemana"]:checked')).map(c => c.value);
-        if (checks.length === 0) return alert('Seleccione al menos un día de clase.');
-        let diasTexto = (checks.length === 5 && checks.join(',') === 'Lun,Mar,Mié,Jue,Vie') ? 'Lun a Vie' :
-                        (checks.length === 6 && checks.join(',') === 'Lun,Mar,Mié,Jue,Vie,Sáb') ? 'Lun a Sáb' : checks.join(', ');
-
-        const h1 = document.getElementById('pickerHoraInicio').value;
-        const h2 = document.getElementById('pickerHoraFin').value;
-        
-        function f12(t){ let [h,m]=t.split(':'); h=parseInt(h); let ampm=h>=12?'PM':'AM'; return `${h%12||12}:${m} ${ampm}`; }
-
-        if(targetHorarioInput) targetHorarioInput.value = `${diasTexto}: ${f12(h1)} - ${f12(h2)}`;
-        modalHorarioGlobal.classList.add('hidden');
-        modalHorarioGlobal.classList.remove('flex');
-      });
-
-      // -----------------------------------------------------------------
-      // MODAL NUEVA CATEGORÍA
-      // -----------------------------------------------------------------
-      const modalNuevaCat = document.getElementById('modalNuevaCategoria');
-      document.getElementById('btnNuevaCategoriaModal').addEventListener('click', () => {
-        const select = document.getElementById('newCatProfesor');
-        select.innerHTML = '';
-        profesores.forEach(p => select.appendChild(new Option(`${p.nombre} (${p.correo})`, p.id)));
-        modalNuevaCat.classList.remove('hidden');
-        modalNuevaCat.classList.add('flex');
-      });
-
-      function closeNuevaCatModal() {
-        modalNuevaCat.classList.add('hidden');
-        modalNuevaCat.classList.remove('flex');
-        document.getElementById('formNuevaCategoria').reset();
-      }
-
-      document.getElementById('btnCloseNuevaCatModal').addEventListener('click', closeNuevaCatModal);
-      document.getElementById('btnCancelNuevaCatModal').addEventListener('click', closeNuevaCatModal);
-
-      document.getElementById('formNuevaCategoria').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const newKey = "cat_" + Date.now();
-        const tarifaRaw = document.getElementById('newCatTarifa').value.trim();
-        const isHourly = tarifaRaw.toLowerCase().includes('hora');
-        
-        categorias[newKey] = {
-          titulo: document.getElementById('newCatTitulo').value.trim(),
-          cuposOcupados: 0,
-          cuposTotal: isHourly ? 0 : parseInt(document.getElementById('newCatCapacidad').value) || 10,
-          profesorId: isHourly ? "" : document.getElementById('newCatProfesor').value,
-          horario: isHourly ? "Horario según asignación" : document.getElementById('newCatHorario').value.trim(),
-          tarifa: tarifaRaw,
-          materias: isHourly ? [] : ["Matemáticas", "Castellano / Lengua", "Inglés", "Ciencias Naturales"],
-          esPorHoras: isHourly
-        };
-
-        saveState(); updateCardsDisplay(); syncCategoriasSelects();
-        catSelector.value = newKey; loadCategoriaToForm(newKey);
-        closeNuevaCatModal();
-        alert(`¡Categoría "${categorias[newKey].titulo}" creada exitosamente!`);
-      });
-
-      // -----------------------------------------------------------------
-      // GESTIÓN DE PROFESORES Y MENÚ DRAWER
-      // -----------------------------------------------------------------
-      function populateProfesorSelect() {
-        const select = document.getElementById('editProfesor');
-        select.innerHTML = '';
-        profesores.forEach(p => select.appendChild(new Option(`${p.nombre} (${p.correo})`, p.id)));
-      }
-
-      function renderProfesoresList() {
-        const list = document.getElementById('profesoresList');
-        list.innerHTML = '';
-        profesores.forEach((prof, idx) => {
-          list.innerHTML += `<div class="p-2.5 bg-white border border-slate-200 rounded-lg flex items-center justify-between text-xs">
-            <div><div class="font-bold text-slate-900">${prof.nombre}</div>
-            <div class="text-[11px] text-slate-500">Tel: ${prof.tel} • ${prof.especialidad}</div>
-            <div class="text-[11px] text-blue-700 font-mono">${prof.correo}</div></div>
-            <button type="button" onclick="deleteProfesor(${idx})" class="text-rose-600 font-bold ml-2">Eliminar</button></div>`;
-        });
-      }
-
-      window.deleteProfesor = function(index) {
-        if (profesores.length <= 1) return alert('Debe existir al menos un profesor registrado.');
-        const profId = profesores[index].id;
-        Object.keys(categorias).forEach(k => {
-          if (categorias[k].profesorId === profId) categorias[k].profesorId = profesores.find(p => p.id !== profId).id;
-        });
-        profesores.splice(index, 1);
-        saveState(); populateProfesorSelect(); renderProfesoresList(); updateCardsDisplay();
-      };
-
-      document.getElementById('formNewProfesor').addEventListener('submit', function(e) {
-        e.preventDefault();
-        profesores.push({
-          id: "p_" + Date.now(), nombre: document.getElementById('profNombre').value.trim(),
-          tel: document.getElementById('profTel').value.trim(),
-          correo: document.getElementById('profCorreo').value.trim().toLowerCase(),
-          especialidad: document.getElementById('profEspecialidad').value.trim()
-        });
-        saveState(); populateProfesorSelect(); renderProfesoresList(); this.reset(); alert('Profesor registrado exitosamente.');
-      });
-
-      const drawer = document.getElementById('adminDrawer');
-      const overlay = document.getElementById('adminDrawerOverlay');
-      function toggleDrawer(open) {
-        if (open) {
-          drawer.classList.remove('-translate-x-full'); overlay.classList.remove('hidden');
-          populateProfesorSelect(); loadCategoriaToForm(catSelector.value); renderProfesoresList();
-        } else { drawer.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
-      }
-
-      document.getElementById('btnToggleAdminDrawer').addEventListener('click', (e) => { e.preventDefault(); toggleDrawer(true); });
-      document.getElementById('btnCloseAdminDrawer').addEventListener('click', () => toggleDrawer(false));
-      overlay.addEventListener('click', () => toggleDrawer(false));
-
-      document.getElementById('tabBtnCategorias').addEventListener('click', () => {
-        document.getElementById('tabBtnCategorias').className = "flex-1 py-3 border-b-2 border-blue-900 text-blue-900 bg-white";
-        document.getElementById('tabBtnProfesores').className = "flex-1 py-3 border-b-2 border-transparent hover:text-slate-900";
-        document.getElementById('tabContentCategorias').classList.remove('hidden');
-        document.getElementById('tabContentProfesores').classList.add('hidden');
-      });
-
-      document.getElementById('tabBtnProfesores').addEventListener('click', () => {
-        document.getElementById('tabBtnProfesores').className = "flex-1 py-3 border-b-2 border-blue-900 text-blue-900 bg-white";
-        document.getElementById('tabBtnCategorias').className = "flex-1 py-3 border-b-2 border-transparent hover:text-slate-900";
-        document.getElementById('tabContentProfesores').classList.remove('hidden');
-        document.getElementById('tabContentCategorias').classList.add('hidden');
-      });
-
-      // -----------------------------------------------------------------
-      // ACUDIENTES Y MATRÍCULA FINAL
-      // -----------------------------------------------------------------
-      let acudientes = [];
-      const modalAcudiente = document.getElementById('modalAcudiente');
-      document.getElementById('btnOpenModal').addEventListener('click', () => {
-        if (acudientes.length >= 2) return alert('Máximo 2 acudientes permitidos.');
-        modalAcudiente.classList.remove('hidden'); modalAcudiente.classList.add('flex');
-      });
-
-      function closeAcudienteModal() { modalAcudiente.classList.add('hidden'); modalAcudiente.classList.remove('flex'); document.getElementById('acudienteForm').reset(); }
-      document.getElementById('btnCloseModal').addEventListener('click', closeAcudienteModal);
-      document.getElementById('btnCancelModal').addEventListener('click', closeAcudienteModal);
-
-      document.getElementById('acudienteForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        acudientes.push({
-          relacion: document.getElementById('modalRelacion').value, nombre: document.getElementById('modalNombre').value.trim(),
-          tel: document.getElementById('modalTel').value.trim(), correo: document.getElementById('modalCorreo').value.trim(),
-          direccion: document.getElementById('modalDireccion').value.trim()
-        });
-        renderTable(); closeAcudienteModal();
-      });
-
-      window.deleteAcudiente = function(i) { acudientes.splice(i, 1); renderTable(); };
-
-      function renderTable() {
-        const tBody = document.getElementById('acudientesTableBody');
-        tBody.innerHTML = '';
-        if (acudientes.length === 0) {
-          tBody.innerHTML = '<tr id="emptyRow"><td colspan="6" class="p-3 text-center text-slate-400 italic">No hay acudientes registrados (mínimo 1).</td></tr>';
-        } else {
-          acudientes.forEach((item, index) => {
-            tBody.innerHTML += `<tr class="border-b border-slate-200">
-              <td class="p-2 font-medium text-slate-700">${item.relacion}</td><td class="p-2 font-semibold text-slate-900">${item.nombre}</td>
-              <td class="p-2 text-slate-600">${item.tel}</td><td class="p-2 text-slate-600">${item.correo}</td>
-              <td class="p-2 text-slate-600">${item.direccion}</td>
-              <td class="p-2 text-center"><button type="button" onclick="deleteAcudiente(${index})" class="text-rose-600 hover:text-rose-800 font-bold text-xs">Eliminar</button></td>
-            </tr>`;
-          });
-        }
-        const btnOpen = document.getElementById('btnOpenModal');
-        btnOpen.disabled = acudientes.length >= 2;
-        btnOpen.classList.toggle('opacity-50', acudientes.length >= 2);
-        btnOpen.classList.toggle('cursor-not-allowed', acudientes.length >= 2);
-      }
-
-      document.getElementById('matriculaForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        if (acudientes.length === 0) return alert('Debe registrar al menos un acudiente para formalizar la matrícula.');
-
-        const selectedCatKey = document.getElementById('categoriaSelect').value;
-        const cat = categorias[selectedCatKey];
-        if (!cat) return alert('Seleccione una categoría válida.');
-
-        const isHourly = cat.esPorHoras || (cat.tarifa && cat.tarifa.toLowerCase().includes('hora'));
-
-        if (!isHourly) {
-          if (cat.cuposOcupados >= cat.cuposTotal) return alert('No hay cupos disponibles en esta categoría.');
-          cat.cuposOcupados += 1;
-        }
-
-        saveState(); updateCardsDisplay();
-        const nombreEst = document.getElementById('nombres').value; const apellidoEst = document.getElementById('apellidos').value;
-        
-        if(isHourly && currentMatriculaTempData) {
-            alert(`¡Matrícula por horas formalizada exitosamente para ${nombreEst} ${apellidoEst}!\nProfesor: ${getProfesorName(currentMatriculaTempData.profesorId)}\nTotal: $${new Intl.NumberFormat('es-CO').format(currentMatriculaTempData.totalCobro)}`);
-        } else {
-            alert(`¡Matrícula formalizada exitosamente para ${nombreEst} ${apellidoEst}! Se ha asignado y actualizado el cupo en ${cat.titulo}.`);
-        }
-
-        this.reset();
-        acudientes = []; currentMatriculaTempData = null; selectCategoriaPrevia = "";
-        renderTable(); document.getElementById('tarifaPreview').textContent = 'Tarifa: Seleccione categoría';
-        document.getElementById('categoriaSelect').dispatchEvent(new Event('change'));
-      });
-
-      updateCardsDisplay();
-    });
-  </script>
+  <script src="js/admin-matriculas.js"></script>
 </body>
 </html>
